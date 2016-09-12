@@ -1,0 +1,90 @@
+ion-view.profile.home(title="Profilo")
+	ion-subheader.bar.bar-subheader.bar-red
+		.user_name
+			p {{user.name}} {{user.surname}}
+
+	ion-content.has-subheader(padding="true")
+		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
+		.user_preview
+			.user_image(style="background-image: url({{user.profile_image_url}})" ng-click="selectPhoto()")
+			.badges_box
+				.badge(ng-click="showBadgesDialog(0)" ng-class="{'active': user.ecoking_badge.completed}")
+					.icon
+						ng-include(src="'templates/badges/eco_king.html'")
+					.label EcoKing
+				.badge(ng-click="showBadgesDialog(1)" ng-class="{'active': user.social_master_badge.completed}")
+					.icon
+						ng-include(src="'templates/badges/social_master.html'")
+					.label SocialMaster
+				.badge(ng-click="showBadgesDialog(2)" ng-class="{'active': user.nerd_badge.completed}")
+					.icon
+						ng-include(src="'templates/badges/nerd.html'")
+					.label Nerd
+				.badge(ng-click="showBadgesDialog(3)" ng-class="{'active': user.citizen_badge.completed}")
+					.icon
+						ng-include(src="'templates/badges/citizen.html'")
+					.label Citizen
+
+		.button-bar(style="margin: 20px 0px")
+			.button.button-clear.button-assertive(ui-sref="app.notifications()")
+				i.icon.ion-android-notifications 
+				b {{notification_count}}
+			.button.button-clear.button-positive(ui-sref="app.notifications()")
+				i.icon.ion-chatbubbles 
+				b {{messages_count}}
+			.button.button-clear.button-energized(ng-if="user.car_count > 0" ui-sref="app.cars()")
+				i.icon.ion-android-car 
+				b {{user.car_count}}
+
+		.button.button-block.button-positive(ui-sref="app.profile_driver()" ng-if="!user.is_driver") Diventa guidatore per offrire passaggi
+		.button.button-block.button-assertive(ui-sref="app.cars()" ng-if="user.is_driver && user.car_count == 0") Inserisci la tue Auto
+		.button.button-block.button-assertive(ui-sref="app.cars()" ng-if="user.is_driver && user.car_count > 0") Le mie Auto
+
+		.section_title
+			h2 I miei viaggi
+
+		.list
+			a.item.item-icon-right(ui-sref="app.profile_travels({travels: 'driver'})")
+				| Guidatore
+				i.icon.ion-ios-arrow-right
+			a.item.item-icon-right(ui-sref="app.profile_travels({travels: 'passenger'})")
+				| Passeggero
+				i.icon.ion-ios-arrow-right
+			a.item.item-icon-right(ui-sref="app.profile_travels({travels: 'applied'})")
+				| Candidato 
+				i.icon.ion-ios-arrow-right
+			a.item.item-icon-right(ui-sref="app.profile_travels({travels: 'approved'})")
+				| Confermato 
+				i.icon.ion-ios-arrow-right
+		
+		.button.button-block(ng-click="showEditProfileModal()") Modifica Profilo
+		.button.button-block.button-assertive(ng-click="deleteAccount()") Elimina Profilo
+
+script(id='edit-profile-modal.html', type='text/ng-template')
+	ion-modal-view
+		ion-header-bar.bar-positive
+			h1.title.positive Modifica Profilo
+			.buttons
+				button.button.button-icon.ion-ios-close-outline(ng-click="closeEditProfileModal()")
+		ion-content
+			form.list.list-inset.register_form
+				.item(ng-click="newBirthDatePicker()")
+					| Data di Nascita
+					span.item-note(ng-show="!editForm.birth_date") Seleziona data
+					span.item-note(ng-show="editForm.birth_date") {{editForm.birth_date | date:"dd MMMM yyyy"}}
+				label.item.item-input
+					span.input-label Indirizzo
+					input(type='text' name="address" ng-model="editForm.address")
+				label.item.item-input
+					span.input-label Comune
+					input(type='text' name="comune" ng-model="editForm.comune")
+				label.item.item-input
+					span.input-label Comune
+					input(type='text' name="zip_code" ng-model="editForm.zip_code")
+				label.item.item-input.item-select
+					.input-label Provincia
+					select(ng-options="provincia.sigla as (provincia.nome + '(' + provincia.sigla + ')') for provincia in dati_italia.province | orderBy: 'nome'" name="prov" id="prov" ng-model="editForm.prov")
+						option(value="?" selected="true") La tua provincia
+			.row
+				.col
+					.button.button-block.button-positive(ng-click="updateProfile()") Salva Modifiche

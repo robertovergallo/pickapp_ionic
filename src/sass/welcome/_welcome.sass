@@ -1,0 +1,107 @@
+.welcome_page
+	background: url(../img/welcome_bg.jpg)
+	background-size: cover
+	background-position: center
+	height: 100vh
+	+display ( flex )
+	+flex-direction ( column )
+	+justify-content ( flex-end )
+	
+	.info
+		position: absolute
+		top: 25px
+		right: 15px
+		width: 40px
+		height: 40px
+		background: #fff
+		text-align: center
+		font-size: 26px
+		line-height: 40px
+		border-radius: 50%
+		color: $pickapp_blue
+
+	.logo
+		width: 100%
+		margin: 20% auto auto auto
+		background: rgba(#000, .7)
+		padding: 15px 0px
+
+		img
+			width: 70%
+			margin: auto 15%
+
+	.auth_menu
+		margin: auto auto 0px auto
+		padding: 20px
+
+		+display ( flex )
+		+flex-wrap ( wrap )
+
+		.button
+			+flex ( 1 0 120px )
+			margin: auto
+			background: $pickapp_blue
+			border: none
+			color: #fff
+
+			+transition ( background .15s ease-in-out )
+
+			&:active
+				background: darken($pickapp_blue, 5%)
+
+			&.facebook
+				+flex ( 2 0 250px )
+				background: $facebook
+				margin-bottom: 10px
+				font-weight: 700
+
+				&:active
+					background: darken($facebook, 5%)
+
+			&.login
+				margin-right: 5px
+				font-weight: 700
+
+			&.register
+				margin-left: 5px
+				font-weight: 700
+
+
+	.explore_button
+		margin: 0px
+		background: rgba(shade($pickapp_green, 10%), .75)
+		width: 100%
+		height: 60px
+		line-height: 57px
+		color: #fff
+		font-weight: 800
+		font-size: 20px
+		text-align: center
+		text-transform: uppercase
+
+		+transition ( background .15s ease-in-out )
+
+		&:active
+			background: rgba(darken(shade($pickapp_green, 10%), 5%), .75)
+
+.info_modal
+	p
+		color: #666
+		text-align: justify
+		padding: 20px
+
+	// loghi progetto
+
+	.loghi_progetto
+		padding: 20px
+		width: 100%
+		min-height: 100px
+		box-sizing: border-box
+
+		+display(flex)
+		+flex-direction(column)
+
+		.logo_prog
+			width: auto
+			max-height: 80px
+			margin: 10px auto

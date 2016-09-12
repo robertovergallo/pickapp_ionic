@@ -1,0 +1,130 @@
+.home
+	.user_name
+		+display(flex)
+		padding: 0px
+		&:before
+			content: ''
+			z-index: 0
+			display: block
+			width: 100%
+			height: 17px
+			position: absolute
+			border-bottom: 2px dashed #fff
+
+		p
+			padding: 0px 7px
+			margin: 0px auto
+			height: 30px
+			line-height: 30px
+			background: $pickapp_red
+			z-index: 1
+			font-size: 14px
+			font-weight: 700
+			text-transform: uppercase
+
+	.user_preview
+		width: 100%
+		margin: 10px 0px
+
+		+display( flex )
+
+		.user_image
+			+flex ( 1 0 130px )
+			max-width: 130px
+			width: 130px
+			height: 130px
+			background-size: cover
+			background-position: center
+			background-repeat: no-repeat
+			border-radius: 50%
+			margin-right: 10px
+			+box-shadow ( 0px 2px 5px rgba($pickapp_gray, .3) )
+
+	.vrooms
+		position: relative
+		width: 100%
+		height: 150px
+		background-color: $pickapp_blue
+		margin-bottom: 30px
+		overflow: hidden
+
+		.discover
+			position: absolute
+			top: 15px
+			left: 15px
+			color: #FFF
+			font-weight: 800
+			font-size: 26px
+			line-height: 28px
+			text-transform: uppercase
+			+text-shadow ( 0px 0px 10px rgba(#000, .3) )
+
+		#vroom
+			position: absolute
+			width: 250px
+			top: -30px
+			right: -20px
+
+
+	.home_sections
+		position: relative
+		min-height: 400px
+		@include display ( flex )
+		@include flex-direction ( row )
+
+		@media screen and ( max-width: 768px )
+			@include flex-direction ( column )
+
+		.section
+			position: relative
+			margin: auto
+			min-height: 200px
+			@include flex ( 1 )
+			@include display ( flex )
+			padding: 20px 0px
+
+			&.car
+				background: url(https://s3-eu-west-1.amazonaws.com/koodit/pickapp/shared/pickapp_in_car.jpg) center no-repeat
+				background-size: cover !important
+
+			&.driver
+				background: url(https://s3-eu-west-1.amazonaws.com/koodit/pickapp/shared/pickapp_driver.jpg) center no-repeat
+				background-size: cover !important
+
+			&.road
+				background: url(https://s3-eu-west-1.amazonaws.com/koodit/pickapp/shared/pickapp_road.jpg) center no-repeat
+				background-size: cover !important
+
+			&:after
+				content: ''
+				background: rgba(#FFF, .65)
+				z-index: 9
+				@include fillthebox
+				@include transition ( all .25s ease-in-out )
+
+			.content
+				position: relative
+				padding: 10px 30px
+				margin: auto
+				z-index: 99
+
+				h2
+					color: $pickapp_red
+					text-align: center
+					font-size: 22px
+					font-weight: 800
+					margin: 0px
+					margin-bottom: 10px
+					font-family: "Biryani", sans-serif
+					@include transition ( all .25s ease-in-out )
+
+					+text-shadow ( 0px 2px 6px rgba(#FFF, .65) )
+
+				p
+					color: #444
+					text-align: center
+					font-size: 14px
+					line-height: 18px
+					font-weight: 700
+
+					+text-shadow ( 0px 1px 4px rgba(#FFF, .65) )

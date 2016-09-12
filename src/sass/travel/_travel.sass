@@ -1,0 +1,273 @@
+.travel_page
+  .reviews_title
+    padding: 10px 15px
+    margin: 0px 15px
+    margin-bottom: 15px
+    font-size: 15px
+    line-height: 20px
+    color: white
+    background: $pickapp_red
+    font-weight: 800
+    border-radius: 10px
+
+  .reviews
+    padding-bottom: 15px
+
+    .review
+      margin: 0px 15px
+      margin-bottom: 15px
+      padding: 15px
+      background: #f8f8f8
+      border-radius: 10px
+      +borderbox
+
+      p
+        margin: 0px
+        margin-bottom: 10px
+        padding: 0px
+        font-size: 13px
+        line-height: 16px
+        color: $pickapp_blue
+        font-weight: 700
+
+      textarea, .content
+        background: white
+        border: none
+        padding: 10px
+        margin-bottom: 10px
+        display: block
+        width: 100%
+        font-size: 13px
+        color: #666
+        border-radius: 5px
+        +borderbox
+
+      .meta
+        +display ( flex )
+
+        .stars
+          margin-right: auto
+
+          .star
+            position: relative
+            float: left
+            width: 30px
+            height: 30px
+            cursor: pointer
+
+            &:before
+              content: '\f4b2'
+              font-family: "Ionicons"
+              position: absolute
+              width: 30px
+              height: 30px
+              text-align: center
+              line-height: 30px
+              color: $orange
+              font-size: 24px
+
+            &:after
+              content: '\f4b3'
+              font-family: "Ionicons"
+              position: absolute
+              width: 30px
+              height: 30px
+              text-align: center
+              line-height: 30px
+              color: $orange
+              font-size: 24px
+              display: none
+
+            &.active, &.selected
+              &:after
+                display: block
+
+          &.small
+            margin: auto
+            margin-right: 0px
+
+            .star
+              width: 25px
+              height: 25px
+              cursor: default
+
+              &:before
+                width: 25px
+                height: 25px
+                line-height: 25px
+                font-size: 20px
+
+              &:after
+                width: 25px
+                height: 25px
+                line-height: 25px
+                font-size: 20px
+
+        .send
+          border: none
+          background: $pickapp_red
+          padding: 0px 15px
+          height: 30px
+          line-height: 30px
+          font-weight: 800
+          text-transform: uppercase
+          color: white
+          font-size: 13px
+
+  .meta_list
+    margin: 0px
+    margin-bottom: 10px
+    padding: 15px 15px
+    width: 100%
+    background: #f8f8f8
+    border-radius: 10px
+
+
+    a
+      text-decoration: none
+
+    li
+      list-style: none
+      padding: 0px
+      margin: 0px
+      width: 100%
+      height: 45px
+      line-height: 45px
+      border-bottom: 1px solid #ddd
+      font-size: 13px
+      color: #666
+      font-weight: 500
+      text-decoration: none
+
+      +display( flex )
+
+      &.action
+        cursor: pointer
+
+      &:first-child
+        border-top: 1px solid #ddd
+
+      strong
+        font-weight: 800
+
+      span
+        +flex(1)
+        overflow: hidden
+        text-overflow: ellipsis
+        white-space: nowrap
+
+      i, a
+        display: block
+        margin: auto
+        margin-left: 0px
+        margin-right: 10px
+        width: 30px
+        height: 30px
+        font-size: 16px
+        font-weight: 500
+        border-radius: 50%
+        text-align: center
+        line-height: 30px
+        color: white
+        background: $pickapp_blue
+        text-decoration: none
+
+        &.action
+          cursor: pointer
+
+        &.green
+          background: $pickapp_green !important
+          color: white !important
+
+        &.red
+          background: $pickapp_red !important
+          color: white !important
+
+      .user_image
+        margin: auto
+        margin-left: 0px
+        margin-right: 10px
+        width: 30px
+        height: 30px
+        line-height: 30px
+        border-radius: 50%
+        background-size: cover
+        background-position: center
+        background-repeat: no-repeat
+  
+  h3
+    margin: 0px
+    margin-bottom: 5px
+    padding: 0px
+    width: 100%
+    text-indent: 15px
+    font-size: 14px
+    font-weight: 700
+    line-height: 30px
+    color: $pickapp_blue
+    text-transform: uppercase
+
+  .travel_stops
+    margin: 0px 0px
+    padding: 15px
+    width: 100%
+    background: #f8f8f8
+    border-radius: 10px
+    font-size: 13px
+    color: #666
+
+  .custom_button
+    min-height: 40px
+    line-height: 40px
+    font-size: 13px
+
+  .private_chats
+    margin: 0px 0px
+    padding: 15px
+    width: 100%
+    background: #f8f8f8
+    border-radius: 10px
+
+    +display (flex)
+    +flex-direction ( row )
+    +flex-wrap ( wrap )
+
+    .chat
+      +flex( 1 0 50px )
+      width: 50px
+      padding: 10px
+      border-radius: 6px
+      text-decoration: none
+      background: rgba(black, .035)
+      text-align: center
+      +transition ( all .15 ease-in-out )
+
+      &:hover
+        background: rgba(black, .075)
+        +transition ( all .15 ease-in-out )
+
+        .user_photo
+          +box-shadow( 0px 4px 8px rgba(black, .1) )
+
+        .user_name
+          color: #444
+
+
+      .user_photo
+        width: 50px
+        height: 50px
+        margin: auto
+        margin-bottom: 10px
+        background-size: cover
+        background-position: center
+        background-repeat: no-repeat
+        border-radius: 50%
+        +box-shadow( 0px 2px 3px rgba(black, .15) )
+
+      .user_name
+        color: #666
+        font-size: 13px
+        font-weight: 700
+        margin: 0px
+        text-decoration: none
+        text-align: center

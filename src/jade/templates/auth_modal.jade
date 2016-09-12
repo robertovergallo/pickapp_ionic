@@ -1,0 +1,178 @@
+ion-modal-view(ng-controller="WelcomeController")
+	ion-content(scroll="false")
+		.welcome_page
+			i.info.ion-information(ng-click="showInfoModal()")
+			.logo
+				img(src="img/logo.png")
+			.auth_menu
+				button.button.facebook(ng-click="authenticate('facebook', {params: {resource_class: 'User'}})") Accedi con Facebook
+				button.button.login(ng-click="showLoginModal()") Login
+				button.button.register(ng-click="showRegisterModal()") Registrati
+			
+			.explore_button(ng-click="showIntroModal()") ESPLORA
+
+script(id='login-modal.html', type='text/ng-template')
+	ion-modal-view.login_modal
+		ion-content
+			h2.login_title Accedi a PickApp
+
+			.row
+				.col
+					.list.list-inset.login_form(ng-init="loginForm = {}")
+						label.item.item-input
+							input(type='email' name="email" placeholder='Email' ng-model="loginForm.email")
+						label.item.item-input
+							input(type='password' name="password" placeholder='Password' ng-model="loginForm.password")
+
+			.row
+				.col
+					button.button-clear.button-block.button-positive(ng-click="askPasswordReset()") Hai dimenticato la password?
+
+			.row
+				.col
+					.button.button-block.button-assertive(ng-click="closeLoginModal()") Annulla
+				.col
+					.button.button-block.button-balanced(ng-click="submitLogin(loginForm)") Accedi
+
+script(id='register-modal.html', type='text/ng-template')
+	ion-modal-view.register_modal
+		ion-content
+			h2.register_title Registrazione
+
+			.row
+				.col
+					p(style="color:#666") Se vuoi accedere ad una stanza di una scuola, di un'azienda o un gruppo specifico ricordati di usare esclusivamente la mail che ti è stata indicata.
+					form.list.register_form(name="regFormElmt")
+						.item.profile_pic
+							.image(ng-click="selectPhoto()" style='background-image: url({{registerForm.profile_image_data.src}})')
+								span(ng-if="!registerForm.profile_image_data.src") Foto Profilo
+
+						label.item.item-input
+							input(type='text' name="nome" placeholder='Nome' ng-model="registerForm.name" required="true" ng-required="true")
+						.form-errors.item(ng-messages='regFormElmt.nome.$error' ng-if='regFormElmt.nome.$invalid && regFormElmt.nome.$touched')
+							.form-error(ng-message='required') Campo obbligatorio.
+
+						label.item.item-input
+							input(type='text' name="cognome" placeholder='Cognome' ng-model="registerForm.surname" required="true" ng-required="true")
+						.form-errors.item(ng-messages='regFormElmt.cognome.$error' ng-if='regFormElmt.cognome.$invalid && regFormElmt.cognome.$touched')
+							.form-error(ng-message='required') Campo obbligatorio.
+
+						label.item.item-input
+							span.input-label Data di Nascita
+							input(type='date' name="birth_date" ng-model="registerForm.birth_date" required="true" ng-required="true" max="{{max_birth_date}}")
+						.form-errors.item(ng-messages='regFormElmt.birth_date.$error' ng-if='regFormElmt.birth_date.$invalid && regFormElmt.birth_date.$touched')
+							.form-error(ng-message='required') Campo obbligatorio.
+							.form-error(ng-message='max') Devi avere almeno 13 anni.
+
+						label.item.item-input
+							input(type='text' name="nickname" placeholder='Nickname' ng-model="registerForm.nickname" required="true" ng-required="true")
+						.form-errors.item(ng-messages='regFormElmt.nickname.$error' ng-if='regFormElmt.nickname.$invalid && regFormElmt.nickname.$touched')
+							.form-error(ng-message='required') Campo obbligatorio.
+
+						label.item.item-input
+							input(type='text' name="address" placeholder='Indirizzo' ng-model="registerForm.address" required="true" ng-required="true")
+						.form-errors.item(ng-messages='regFormElmt.address.$error' ng-if='regFormElmt.address.$invalid && regFormElmt.address.$touched')
+							.form-error(ng-message='required') Campo obbligatorio.
+
+						label.item.item-input
+							input(type='number' name="zip_code" placeholder='CAP' ng-model="registerForm.zip_code" required="true" ng-required="true")
+						.form-errors.item(ng-messages='regFormElmt.zip_code.$error' ng-if='regFormElmt.zip_code.$invalid && regFormElmt.zip_code.$touched')
+							.form-error(ng-message='required') Campo obbligatorio.
+
+						label.item.item-input
+							input(type='text' name="comune" placeholder='Comune' ng-model="registerForm.comune" required="true" ng-required="true")
+						.form-errors.item(ng-messages='regFormElmt.comune.$error' ng-if='regFormElmt.comune.$invalid && regFormElmt.comune.$touched')
+							.form-error(ng-message='required') Campo obbligatorio.
+
+						label.item.item-input.item-select
+							.input-label Provincia
+							select(ng-options="provincia.sigla as (provincia.nome + '(' + provincia.sigla + ')') for provincia in dati_italia.province | orderBy: 'nome'" name="prov" id="prov" ng-model="registerForm.prov" required="true" ng-required="true")
+								option(value="?" selected="true") La tua provincia
+						.form-errors.item(ng-messages='regFormElmt.prov.$error' ng-if='regFormElmt.prov.$invalid && regFormElmt.prov.$touched')
+							.form-error(ng-message='required') Campo obbligatorio.
+
+						label.item.item-input
+							input(type='email' name="email" placeholder='Indirizzo email' ng-model="registerForm.email" autocomplete="false" required="true" ng-required="true" ng-pattern="/^.+@.+\..+$/" confirm-email="registerForm.email" ng-model-options="{ debounce: 500 }")
+						.form-errors.item(ng-messages='regFormElmt.email.$error' ng-if='regFormElmt.email.$invalid && regFormElmt.email.$touched')
+							.form-error(ng-message='pattern') Indirizzo email non valido.
+							.form-error(ng-message='email') Indirizzo email già in uso.
+							.form-error(ng-message='required') Campo obbligatorio.
+
+						label.item.item-input
+							input(type='password' name="password" placeholder='Password' ng-model="registerForm.password" required="true" ng-required="true" ng-minlength="8" maxlength="72")
+						.form-errors.item(ng-messages='regFormElmt.password.$error' ng-if='regFormElmt.password.$invalid && regFormElmt.password.$touched')
+							.form-error(ng-message='minlength') Password troppo corta.
+							.form-error(ng-message='required') Campo obbligatorio.
+
+
+						label.item.item-input
+							input(type='password' name="password_confirmation" placeholder='Conferma password' ng-model="registerForm.password_confirmation" required="true" ng-required="true" ng-minlength="8" maxlength="72" confirm-pwd="registerForm.password")
+						.form-errors.item(ng-messages='regFormElmt.password_confirmation.$error' ng-if='regFormElmt.password_confirmation.$invalid && regFormElmt.password_confirmation.$touched')
+							.form-error(ng-message='minlength') Password troppo corta.
+							.form-error(ng-message='required') Campo obbligatorio.
+							.form-error(ng-message='password') Non coincide con la password.
+
+						ion-checkbox.terms(ng-model="registerForm.accept_terms" name="accept_terms" required="true" ng-required="true") Accetto i termini e le condizioni d'uso
+
+						.form-errors.item(ng-messages='regFormElmt.accept_terms.$error' ng-if='regFormElmt.accept_terms.$invalid && regFormElmt.accept_terms.$dirty')
+							.form-error(ng-message='required') Devi accettare i termini e le condizioni.
+
+
+			.row
+				.col
+					.button.button-block.button-assertive(ng-click="closeRegisterModal()") Annulla
+				.col
+					.button.button-block(ng-click="submitRegistration(registerForm)" ng-disabled="regFormElmt.$invalid" ng-class="{'button-assertive': regFormElmt.$invalid, 'button-balanced': regFormElmt.$valid}") Registrati
+			
+			.row
+				.col
+					.list.list-inset
+						a.item(href="#" ng-click="showTerms()" style="color: #AAAAAA;") Vedi termini e condizioni
+
+script(id='intro-modal.html', type='text/ng-template')
+	ion-modal-view.intro_modal
+		ion-content(scroll="false")
+			.close_intro
+				i.icon.ion-ios-close-outline(ng-click="closeIntroModal()")
+			ion-slide-box.slides(on-slide-changed='slideHasChanged($index)' show-pager="true")
+				ion-slide
+					.box
+						svg#logo_pickapp(version='1.1', xmlns='http://www.w3.org/2000/svg', xmlns:xlink='http://www.w3.org/1999/xlink', x='0px', y='0px', viewbox='0 0 70 99.9', enable-background='new 0 0 70 99.9', xml:space='preserve')
+							g
+								path(fill='#8DC549', d='M39,3.8l29.8,89.5c0.6,1.6,0.2,3-1,4.3c-0.2,0.2-0.4,0.4-0.8,0.6c-0.8,0.5-1.7,0.7-2.7,0.6,c-1-0.1-1.8-0.5-2.5-1.2L35,70.7L8.2,97.6c-0.7,0.7-1.5,1.1-2.5,1.2c-1,0.1-1.9-0.1-2.7-0.6c-0.8-0.5-1.4-1.2-1.8-2.1,c-0.3-0.9-0.4-1.8,0-2.7L31,3.8c0.2-0.6,0.5-1.2,1-1.7c0.8-0.8,1.8-1.2,3-1.2c0.9,0,1.7,0.2,2.5,0.7C38.2,2.2,38.7,2.9,39,3.8z')
+						.text
+							| viaggia e risparmia...
+							br
+							| in sicurezza
+				ion-slide
+					.box
+						img#vroom(src="http://koodit.s3.amazonaws.com/pickapp/shared/app/pickcar.jpg")
+						.text
+							| il risparmio intelligente... 
+							br
+							| e divertente!
+				ion-slide
+					.box
+						img#vroom(src="http://koodit.s3.amazonaws.com/pickapp/shared/app/vroom.png")
+						.text
+							| scegli la tua vroom...
+							br
+							| e parti! 
+
+script(id='info-modal.html', type='text/ng-template')
+	ion-modal-view.info_modal
+		ion-header-bar.bar-positive
+			h1.title.positive Info
+			.buttons
+				button.button.button-icon.ion-ios-close-outline(ng-click="closeInfoModal()")
+		ion-content
+			p Il progetto BIsmart è stato finanziato nell'ambito del bando Be@active promosso dall'UPI (unione province italiane) in collaborazione con l'Agenzia Nazionale Giovani AGN. E' stato pensato dalla Provincia di Biella/Uff. Politiche Giovanili in collaborazione con Groove APS, Consorzio Filo da Tessere, Cittadellarte Fondazione Pistoletto, UST Biella, Consorzio IRIS. L'azione sinergica di tutti i partner ha permesso lo sviluppo di un intervento volto a realizzare un nuovo supporto tecnologico denominato Pick-app per lo scambio di informazioni relative al carpooling per gli utenti di scuole, luoghi di interesse culturale, sociale e di intrattenimento sul territorio biellese. con l'auspicio di un cambiamento culturale, verso migliori pratiche sociali quali la socializzazione, l'ottimizzazione dei costi dei tempi e dei mezzi di mobilità, il rispetto per l'ambiente, punti cardine di tutta l'azione territoriale.
+
+			.loghi_progetto
+				img.logo_prog(ng-src="http://koodit.s3.amazonaws.com/pickapp/shared/loghi/beactive.jpg")
+				img.logo_prog(ng-src="http://koodit.s3.amazonaws.com/pickapp/shared/loghi/cittadellarte.jpg")
+				img.logo_prog(ng-src="http://koodit.s3.amazonaws.com/pickapp/shared/loghi/filo.gif")
+				img.logo_prog(ng-src="http://koodit.s3.amazonaws.com/pickapp/shared/loghi/iris.jpg")
+				img.logo_prog(ng-src="http://koodit.s3.amazonaws.com/pickapp/shared/loghi/logo_bi.jpg")
+				img.logo_prog(ng-src="http://koodit.s3.amazonaws.com/pickapp/shared/loghi/logo-upi.gif")
+				img.logo_prog(ng-src="http://koodit.s3.amazonaws.com/pickapp/shared/loghi/stemmabi.jpg")

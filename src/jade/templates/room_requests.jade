@@ -1,0 +1,27 @@
+ion-view.rooms
+	ion-nav-title Richieste
+	ion-content
+		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
+		.list.card(ng-repeat="request in room.travel_requests | orderBy:'one_way_datetime'")
+			.item.item-avatar
+				img(src="{{request.user.profile_image_url}}")
+				h2(ng-if="!request.user.surname") {{request.user.name}}
+				h2(ng-if="request.user.surname") {{request.user.name}} {{request.user.surname}} 
+				p {{request.one_way_datetime | date:"dd MMMM 'alle' HH:mm"}}
+			.item.item-icon-left
+				i.icon.ion-ios-flag-outline.balanced
+				b Da: 
+				| {{request.starting_address}}
+			.item.item-icon-left
+				i.icon.ion-ios-flag.assertive
+				b A: 
+				| {{room.name}}
+
+			.item.tabs.tabs-secondary.tabs-icon-left
+				a.tab-item(ui-sref="app.room_request({room_id: room.id, travel_id: request.id})")
+					i.icon.ion-eye
+					| Dettagli
+
+		.row(ng-if="room.travel_requests.length == 0")
+			.col
+				p(style="color: #666; font-size: 14px; margin: 20px 0px; text-align: center;") Nessuno richiede passaggi verso questa destinazione. Sarai tu il primo?

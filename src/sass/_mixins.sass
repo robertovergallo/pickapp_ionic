@@ -1,0 +1,78 @@
+// ok to deploy
+
+// Debug Mixin
+
+=randomize
+  background: $pickapp_blue
+  min-height: 100px
+
+// Clip Path Mixin
+
+=clip-path($var)
+  +prefixer(clip-path, $var, webkit moz ms o spec)
+
+// Border Box Mixin
+
+=borderbox
+  box-sizing: border-box
+
+// Box Shadow Mixin
+
+=box-shadow($var)
+  +prefixer(box-shadow, $var, webkit moz ms o spec)
+
+// Text Shadow Mixin
+
+=text-shadow($var)
+  +prefixer(text-shadow, $var, webkit moz ms o spec)
+
+// Background Size Mixin
+
+=background-size($var)
+  +prefixer(background-size, $var, webkit moz ms o spec)
+
+// Fill the old way
+
+=fillthebox
+  position: absolute
+  top: 0px
+  left: 0px
+  bottom: 0px
+  right: 0px
+
+// Responsive Mixin
+
+=phone
+  @media screen and (max-width: 770px)
+    display: block
+  @media screen and (min-width: 770px)
+    display: none
+
+=desktop
+  @media screen and (max-width: 770px)
+    display: none
+  @media screen and (min-width: 770px)
+    display: block
+
+// Create Class Mixin (wooooow)
+
+=create-class($name, $color)
+  .#{$name}
+    color: $color !important
+    &.light
+      color: lighten($color, 15%) !important
+    &.dark
+      color: darken($color, 15%) !important
+  .bg_#{$name}
+    background: $color !important
+    &.light
+      background: lighten($color, 15%) !important
+    &.dark
+      background: darken($color, 15%) !important
+  .border_#{$name}
+    border-color: $color !important
+    &.light
+      border-color: lighten($color, 15%) !important
+    &.dark
+      border-color: darken($color, 15%) !important
+

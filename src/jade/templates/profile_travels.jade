@@ -1,0 +1,42 @@
+ion-view
+	ion-nav-title I miei viaggi
+	ion-nav-buttons(side="right")
+		button.button.button-clear(ng-click="toggleCompletedTravels()")
+			span(ng-show="!display_completed_travels") Vedi Tutti
+			span(ng-show="display_completed_travels") Vedi Attivi
+	ion-content
+		.list.card(ng-repeat="travel in travels | orderBy:'departure_datetime' track by $index" ng-show="shouldDisplayTravel(travel.departure_datetime) || display_completed_travels")
+			.item.item-avatar
+				img(src="{{travel.user.profile_image_url}}")
+				h2(ng-if="!travel.user.surname") {{travel.user.name}}
+				h2(ng-if="travel.user.surname") {{travel.user.name}} {{travel.user.surname}} 
+				p {{travel.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+			.item.item-icon-left
+				i.icon.ion-ios-flag.balanced
+				b Da: 
+				| {{travel.starting_address}}
+			.item.item-icon-left
+				i.icon.ion-ios-location.assertive
+				b A: 
+				| {{travel.room.name}}
+
+			.item.tabs.tabs-secondary.tabs-icon-left
+				a.tab-item.assertive(ng-if="!travel.completed && !travel.waiting_for_confirm")
+					i.icon.ion-android-alert
+					| Non ancora Svolto
+				a.tab-item.balanced(ng-if="travel.completed")
+					i.icon.ion-ios-checkmark
+					| Completato dal Guidatore
+				a.tab-item.positive(ng-if="travel.waiting_for_confirm")
+					i.icon.ion-ios-checkmark-outline
+					| In attesa di Conferma da parte del Guidatore
+			.item.tabs.tabs-secondary.tabs-icon-left
+				a.tab-item(ui-sref="app.profile_travel({travel_id: travel.id})")
+					i.icon.ion-eye
+					| Dettagli
+				
+		
+		.row(ng-if="travels.length == 0")
+			.col
+				p(style="color: #666; font-size: 14px; margin: 20px 0px; text-align: center;") Non ci sono viaggi da visualizzare in questa categoria.
+

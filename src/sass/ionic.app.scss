@@ -1,0 +1,40 @@
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "ionic/fonts" !default;
+
+// Get me a drink
+@import "bourbon/bourbon";
+
+// Colors
+@import "colors";
+
+// Mixins
+@import "mixins";
+
+// Chat
+@import "chat";
+
+// Include all of Ionic
+@import "ionic/scss/ionic";
+
+@import "main/main";
+@import "main/badges";
+@import "main/profile_card";
+
+@import "modals/login_modal";
+@import "modals/register_modal";
+@import "modals/intro_modal";
+@import "modals/map_modal";
+
+@import "sidemenu/sidemenu";
+
+@import "welcome/welcome";
+
+@import "home/home";
+
+@import "rooms/rooms";
+@import "rooms/room";
+@import "rooms/room_travels_search";
+
+@import "travel/travel";
+
+@import "profile/profile_driver";

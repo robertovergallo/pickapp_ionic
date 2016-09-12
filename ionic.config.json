@@ -1,0 +1,28 @@
+{
+  "name": "PickApp",
+  "app_id": "aaa54618",
+  "gulpStartupTasks": [
+    "default"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ],
+  "proxies": [
+    {
+      "path": "/api_base",
+      "proxyUrl": "http://www.pick-app.it/api"
+    },
+    {
+      "path": "/auth_base",
+      "proxyUrl": "http://www.pick-app.it"
+    }
+  ],
+  "browsers": [
+    {
+      "platform": "android",
+      "browser": "crosswalk",
+      "version": "12.41.296.5"
+    }
+  ]
+}

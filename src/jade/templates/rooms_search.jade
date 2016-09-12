@@ -1,0 +1,24 @@
+ion-view.rooms
+  ion-nav-title CERCA VROOMS
+  ion-content
+    form.search_form(ng-submit="search_rooms(search_term)")
+      .list
+        .item.item-input-inset
+          label.item-input-wrapper
+            input(type='text' ng-model="search_term" placeholder="Cerca fra le Vroom..." ng-change="search_rooms(search_term)" ng-model-options='{ debounce: 500 }')
+          button.button.button-balanced.button-small(type="submit") Cerca
+
+    //- .row
+    //-   .col
+    //-     form.search_form(ng-submit="search_rooms(search_term)")
+    //-       input(type="text" ng-model="search_term" placeholder="Cerca una Vroom..." ng-change="search_rooms(search_term)" ng-model-options='{ debounce: 500 }')
+    //-       button(type="submit") Cerca
+
+    .rooms_list(ng-if="search_results.length > 0")
+      .room(ng-repeat="room in search_results" ui-sref="app.room({room_id: room.id})")
+        .bg(style="background-image: url({{room.image_url}})")
+        p {{room.name}}
+
+    .row(ng-if="search_results.length == 0")
+      .col
+        p(style="color: #666; font-size: 14px; margin: 20px 0px; text-align: center;") Nessun risultato trovato.

@@ -1,0 +1,43 @@
+ion-view
+	ion-nav-title Le tue Auto
+
+	ion-nav-buttons(side="right")
+		.button.button-icon.ion-android-add(ng-click="showNewCarModal()")
+
+	ion-content
+		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
+		ion-list
+			ion-item.item-avatar.item-icon-right(ng-repeat="car in cars")
+				img(src="img/car.png")
+				h2 {{car.model}}
+				p {{car.plate.toUpperCase()}}
+				//i.icon.ion-ios-arrow-right
+				ion-option-button(class="button-assertive" ng-click="handleDeleteClick(car.id)") Elimina
+
+script(id='new-car-modal.html', type='text/ng-template')
+	ion-modal-view.map_modal
+		ion-header-bar.bar-positive
+			h1.title.positive Nuova Auto
+			.buttons
+				button.button.button-icon.ion-ios-close-outline(ng-click="closeNewCarModal()")
+		ion-content
+			.list
+				label.item.item-input
+					input(type="text" placeholder="Modello Auto" ng-model="newCar.model")
+
+				label.item.item-input
+					input(type="text" placeholder="Targa Auto" ng-model="newCar.plate")
+
+				label.item.item-input
+					input(type="number" placeholder="Posti disponibili" ng-model="newCar.sits")
+
+				ion-toggle(ng-model="newCar.can_smoke" toggle-class="toggle-positive") Fumatori
+
+				ion-toggle(ng-model="newCar.animals_allowed" toggle-class="toggle-positive") Animali
+
+				.item.item-input
+					textarea(type="number" placeholder="Note ..." ng-model="newCar.notes")
+
+			.row
+				.col
+					.button.button-positive.button-block(ng-click="handleCarNewClick()") Aggiungi Auto

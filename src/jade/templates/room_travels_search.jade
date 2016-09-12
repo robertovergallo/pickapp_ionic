@@ -1,0 +1,71 @@
+ion-view.rooms
+  ion-nav-title Cerca viaggi
+  ion-content.room_travels_search
+    .col
+      .row
+        button.button.button-calm.button-block(ng-click="togglePanel()") Imposta ricerca
+    ion-scroll.search_panel(ng-class="{'open': search_panel_open}")
+      i.ion.ion-close.close(ng-click="togglePanel()")
+      form(style="padding-top: 50px")
+        ion-toggle(ng-init="travelSearch.towards_room = true" ng-model="travelSearch.towards_room" toggle-class="toggle-calm")
+          span(ng-if="!travelSearch.towards_room") Da 
+          span(ng-if="travelSearch.towards_room") Verso 
+          | {{room.name}}
+
+        .item(ng-click="newTravelOfferDatePicker()")
+          | Dal
+          span.item-note(ng-show="!travelSearch.min_departure_datetime") Seleziona data
+          span.item-note(ng-show="travelSearch.min_departure_datetime") {{travelSearch.min_departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+
+        .item(ng-click="newTravelOfferBackDatePicker()")
+          | Al
+          span.item-note(ng-show="!travelSearch.max_departure_datetime") Seleziona data
+          span.item-note(ng-show="travelSearch.max_departure_datetime") {{travelSearch.max_departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+
+        ion-toggle(ng-init="travelSearch.flexible_times = true" ng-model="travelSearch.flexible_times" toggle-class="toggle-calm") Orari flessibili
+        ion-toggle(ng-model="travelSearch.is_recursive" toggle-class="toggle-calm") Ricerca ricorsiva
+        ion-toggle(ng-model="travelSearch.cash_back" toggle-class="toggle-calm") Rimborso spese
+        ion-toggle(ng-model="travelSearch.can_smoke" toggle-class="toggle-calm") Si può fumare
+        ion-toggle(ng-model="travelSearch.animals_allowed" toggle-class="toggle-calm") Animali ammessi
+        ion-toggle(ng-model="travelSearch.only_with_feedback" toggle-class="toggle-calm") Solo guidatori con review
+
+        .col
+          .row
+            button.button.button-balanced.button-block(ng-click="searchTravels()") Avvia ricerca
+
+
+    p.text-center Risultati della ricerca:
+
+    .list.card(ng-repeat="offer in found_travels | orderBy:'one_way_datetime'")
+      .item.item-avatar
+        img(src="{{offer.user.profile_image_url}}")
+        h2(ng-if="!offer.user.surname") {{offer.user.name}}
+        h2(ng-if="offer.user.surname") {{offer.user.name}} {{offer.user.surname}} 
+        p {{offer.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+
+      .item.item-icon-left(ng-if="offer.towards_room")
+        i.icon.ion-ios-flag-outline.balanced
+        b Da: 
+        | {{offer.starting_address}}
+      .item.item-icon-left(ng-if="!offer.towards_room")
+        i.icon.ion-ios-flag-outline.balanced
+        b Da: 
+        | {{room.name}}
+
+      .item.item-icon-left(ng-if="offer.towards_room")
+        i.icon.ion-ios-flag.assertive
+        b A: 
+        | {{room.name}}
+      .item.item-icon-left(ng-if="!offer.towards_room")
+        i.icon.ion-ios-flag.assertive
+        b A: 
+        | {{offer.destination_address}}
+
+      .item.tabs.tabs-secondary.tabs-icon-left
+        a.tab-item(ui-sref="app.room_offer({room_id: room.id, travel_id: offer.id})")
+          i.icon.ion-eye
+          | Dettagli
+
+    .row(ng-if="found_travels.length == 0")
+      .col
+        p(style="color: #666; font-size: 14px; margin: 20px 0px; text-align: center;") Nessuno risultato trovato. Sarai tu il primo?

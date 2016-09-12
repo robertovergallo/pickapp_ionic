@@ -1,0 +1,65 @@
+ion-view.home.rooms(ng-class="{'empty': !user.id}")
+	ion-subheader.bar.bar-subheader.bar-red
+		.user_name
+			p {{user.name}} {{user.surname}}
+
+	ion-content.has-subheader(padding="true")
+		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
+		.user_preview
+			.user_image(style="background-image: url({{user.profile_image_url}})")
+			.badges_box
+				.badge(ng-click="showBadgesDialog(0)" ng-class="{'active': user.ecoking_badge.completed}")
+					.icon
+						ng-include(src="'templates/badges/eco_king.html'")
+					.label EcoKing
+				.badge(ng-click="showBadgesDialog(1)" ng-class="{'active': user.social_master_badge.completed}")
+					.icon
+						ng-include(src="'templates/badges/social_master.html'")
+					.label SocialMaster
+				.badge(ng-click="showBadgesDialog(2)" ng-class="{'active': user.nerd_badge.completed}")
+					.icon
+						ng-include(src="'templates/badges/nerd.html'")
+					.label Nerd
+				.badge(ng-click="showBadgesDialog(3)" ng-class="{'active': user.citizen_badge.completed}")
+					.icon
+						ng-include(src="'templates/badges/citizen.html'")
+					.label Citizen
+
+		.button.button-block.button-clear(ui-sref="app.profile()") Vai al tuo profilo
+
+		.vrooms(ui-sref="app.rooms()")
+			img#vroom(src="http://koodit.s3.amazonaws.com/pickapp/shared/app/vroom.png")
+			.discover
+				| Scopri
+				br
+				| le nostre
+
+		form.search_form(ng-submit="goto_search_rooms(search_form)" ng-init="search_form" style="margin-bottom: 20px")
+			.list
+				.item.item-input-inset
+					label.item-input-wrapper
+						input(type='text' ng-model="search_form.search_term" placeholder="Cerca fra le Vroom...")
+					button.button.button-balanced.button-small(type="submit") Cerca
+
+		.home_sections
+			.section.car
+				.content
+					h2 Guidatori
+					p(ng-bind="display_text.driver_payoff")
+			.section.driver
+				.content
+					h2 Passeggeri
+					p(ng-bind="display_text.passenger_payoff")
+			
+			.section.car
+				.content
+					h2 PickApp
+					p(ng-bind="display_text.pickapp_payoff")
+
+		//- .section_title 
+		//- 	h2 Le tue Vroom
+
+		//- .rooms_list
+		//- 	.room(ng-repeat="room in user.preferred_rooms" ui-sref="app.room({room_id: room.id})")
+		//- 		.bg(style="background-image: url({{room.image_url}})")
+		//- 		p {{room.name}}

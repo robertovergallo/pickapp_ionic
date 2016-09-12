@@ -1,0 +1,63 @@
+.sidemenu_back
+	background: #444
+	
+.sidemenu
+	background: #444
+	height: 100vh
+
+	.element
+		position: relative
+		width: 100px
+		height: 100px
+		min-height: 100px
+		background: $pickapp_blue
+
+		+transition ( background .15s ease-in-out )
+
+		&:active
+			background: darken($pickapp_blue, 5%)
+
+		&:nth-child(even)
+			background: lighten($pickapp_blue, 10%)
+
+			&:active
+				background: darken(lighten($pickapp_blue, 10%), 5%)
+
+		&.logout
+			background: $pickapp_red
+
+			&:active
+				background: darken($pickapp_red, 5%)
+
+		+display ( flex )
+
+		.title
+			position: absolute
+			bottom: 5px
+			left: 17px
+			font-size: 14px
+			height: 14px
+			line-height: 14px
+			color: #fff
+			opacity: .6
+			font-weight: 700
+			text-transform: uppercase
+			+transform ( rotate(-90deg) )
+			+transform-origin ( 0px, 14px )
+
+		.bubblebadge
+			position: absolute
+			top: 8px
+			right: 8px
+			padding: 2px 7px
+			background: #fff
+			color: darken($pickapp_blue, 10%)
+			font-weight: 800
+			border-radius: 15px
+			font-size: 14px
+			line-height: 14px
+
+		.icon
+			color: #fff
+			font-size: 50px
+			margin: auto

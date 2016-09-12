@@ -1,0 +1,111 @@
+.room
+	.room_header
+		position: relative
+		width: 100%
+		height: 20vh
+		overflow: hidden
+
+		.bg
+			z-index: 1
+			width: 100%
+			height: 20vh
+			background-size: cover
+			background-position: center
+			background-repeat: no-repeat
+
+		.room_info
+			position: absolute
+			top: 0px
+			left: 0px
+			font-size: 13px
+			text-transform: capitalize
+			background: rgba(#000, .7)
+			font-weight: 500
+			color: #fff
+			padding: 0px 5px
+
+			span
+				margin: 0px 5px
+
+				i
+					margin-right: 5px
+
+		p
+			position: absolute
+			display: block
+			margin: 0px
+			padding: 0px
+			bottom: 0px
+			width: 100%
+			height: 40px
+			line-height: 40px
+			+background-image( linear-gradient( rgba(#000, 0) 0%, rgba(#000, .45) 50%, rgba(#000, .75) 100% ) ) 
+			color: #fff
+			font-size: 16px
+			font-weight: 700
+			text-indent: 15px
+			text-shadow: 0px 1px 3px rgba(#000, .75)
+
+	.room_map
+		position: relative
+		width: 100%
+		height: 15vh
+		background-size: cover
+		background-position: center
+		background-repeat: no-repeat
+
+		+display(flex)
+
+		.room_address
+			position: absolute
+			bottom: 0px
+			left: 0px
+			font-size: 13px
+			text-transform: capitalize
+			background: rgba($pickapp_red, .7)
+			font-weight: 500
+			color: #fff
+			padding: 0px 5px
+
+		.ion-location
+			margin: auto
+			font-size: 36px
+			color: $pickapp_red
+
+		.ion-android-open
+			position: absolute
+			bottom: 10px
+			right: 10px
+			font-size: 24px
+			color: $pickapp_blue
+
+	.room_description
+		font-size: 13px
+		//color: $pickapp_gray
+
+	.travels_actions
+		.item
+			//color: $pickapp_gray
+
+	.actions_row
+		.fav_butt_col
+			max-width: 55px
+
+			.fav_button
+				padding: 0px
+				line-height: 44px
+				min-height: 44px
+				height: 44px
+				width: 44px
+				min-width: 44px
+
+				i
+					margin: auto
+					font-size: 26px
+
+		.button
+			margin: 0px
+			padding: 0px
+			line-height: 44px
+			min-height: 44px
+			height: 44px

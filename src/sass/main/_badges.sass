@@ -1,0 +1,45 @@
+.badges_box
+	width: 100%
+	height: 130px
+
+	+flex ( 1 )
+	+display ( flex )
+	+flex-wrap ( wrap )
+
+	.badge
+		+flex( 1 0 75px )
+		height: 65px
+		padding: 0px
+		margin: 0px
+
+		&.active
+			.icon
+				border: 2px solid $pickapp_blue !important
+				.badge_icon
+					fill: $pickapp_blue !important
+			.label
+				color: $pickapp_blue !important
+
+		.icon
+			padding: 0px
+			margin: auto
+			width: 45px
+			height: 45px
+			border: 2px solid $pickapp_gray
+			border-radius: 50%
+
+			.badge_icon
+				margin-top: 7px
+				padding: 0px
+				width: 26px
+				height: 26px
+				fill: $pickapp_gray
+
+
+		.label
+			width: 100%
+			height: 20px
+			text-align: center
+			color: $pickapp_gray
+			font-size: 12px
+			line-height: 20px

@@ -1,0 +1,105 @@
+ion-view
+	ion-content(scroll="false")
+		.welcome_page
+			.logo
+				img(src="img/logo.png")
+			.auth_menu
+				button.button.facebook(ng-click="authenticate('facebook')") Accedi con Facebook
+				button.button.login(ng-click="showLoginModal()") Login
+				button.button.register(ng-click="showRegisterModal()") Registrati
+			
+			.explore_button(ng-click="showIntroModal()") SCOPRI PICKAPP
+
+script(id='login-modal.html', type='text/ng-template')
+	ion-modal-view.login_modal
+		ion-content
+			h2.login_title Accedi a PickApp
+
+			.row
+				.col
+					form.list.list-inset.login_form(ng-init="loginForm")
+						label.item.item-input
+							input(type='email' name="email" placeholder='Email' ng-model="loginForm.email")
+						label.item.item-input
+							input(type='password' name="password" placeholder='Password' ng-model="loginForm.password")
+
+			.row
+				.col
+					button.button-clear.button-block.button-positive(ng-click="askPasswordReset()") Hai dimenticato la password?
+
+			.row
+				.col
+					.button.button-block.button-assertive(ng-click="closeLoginModal()") Annulla
+				.col
+					.button.button-block.button-balanced(ng-click="submitLogin(loginForm)") Accedi
+
+script(id='register-modal.html', type='text/ng-template')
+	ion-modal-view.register_modal
+		ion-content
+			h2.register_title Registrazione
+
+			.row
+				.col
+					form.list.list-inset.register_form
+						.item.profile_pic
+							.image(ng-click="selectPhoto()" style='background-image: url({{registerForm.profile_image_data.src}})')
+								span(ng-if="!registerForm.profile_image_data.src") Foto Profilo
+						label.item.item-input
+							input(type='text' name="nome" placeholder='Nome' ng-model="registerForm.name")
+						label.item.item-input
+							input(type='text' name="cognome" placeholder='Cognome' ng-model="registerForm.surname")
+						label.item.item-input
+							input(type='date' name="birth_date" placeholder='Data di Nascita' ng-model="registerForm.birth_date")
+						label.item.item-input
+							input(type='text' name="nickname" placeholder='Nickname' ng-model="registerForm.nickname")
+						label.item.item-input
+							input(type='text' name="address" placeholder='Indirizzo' ng-model="registerForm.address")
+						label.item.item-input
+							input(type='text' name="comune" placeholder='Comune' ng-model="registerForm.comune")
+						label.item.item-input.item-select
+							.input-label Provincia
+							select(ng-options="provincia.sigla as (provincia.nome + '(' + provincia.sigla + ')') for provincia in dati_italia.province | orderBy: provincia.nome" name="prov" id="prov" ng-model="registerForm.prov")
+								option(value="?" selected="true" La tua provincia)
+						label.item.item-input
+							input(type='email' name="email" placeholder='Indirizzo email' ng-model="registerForm.email")
+						label.item.item-input
+							input(type='password' name="email" placeholder='Password' ng-model="registerForm.password")
+						label.item.item-input
+							input(type='password' name="email" placeholder='Conferma password' ng-model="registerForm.password_confirmation")
+						ion-checkbox.terms(ng-model="registerForm.accept_terms") Accetto i termini e le condizioni d'uso
+
+			.row
+				.col
+					.button.button-block.button-assertive(ng-click="closeRegisterModal()") Annulla
+				.col
+					.button.button-block.button-positive(ng-click="submitRegistration(registerForm)") Registrati
+
+script(id='intro-modal.html', type='text/ng-template')
+	ion-modal-view.intro_modal
+		ion-content(scroll="false")
+			.close_intro
+				i.icon.ion-ios-close-outline(ng-click="closeIntroModal()")
+			ion-slide-box.slides(on-slide-changed='slideHasChanged($index)')
+				ion-slide(show-pager="true")
+					.box
+						svg#logo_pickapp(version='1.1', xmlns='http://www.w3.org/2000/svg', xmlns:xlink='http://www.w3.org/1999/xlink', x='0px', y='0px', viewbox='0 0 70 99.9', enable-background='new 0 0 70 99.9', xml:space='preserve')
+							g
+								path(fill='#98B733', d='M39,3.8l29.8,89.5c0.6,1.6,0.2,3-1,4.3c-0.2,0.2-0.4,0.4-0.8,0.6c-0.8,0.5-1.7,0.7-2.7,0.6,c-1-0.1-1.8-0.5-2.5-1.2L35,70.7L8.2,97.6c-0.7,0.7-1.5,1.1-2.5,1.2c-1,0.1-1.9-0.1-2.7-0.6c-0.8-0.5-1.4-1.2-1.8-2.1,c-0.3-0.9-0.4-1.8,0-2.7L31,3.8c0.2-0.6,0.5-1.2,1-1.7c0.8-0.8,1.8-1.2,3-1.2c0.9,0,1.7,0.2,2.5,0.7C38.2,2.2,38.7,2.9,39,3.8z')
+						.text
+							| viaggia e risparmia...
+							br
+							| in sicurezza
+				ion-slide
+					.box
+						i.icon.ion-model-s
+						.text
+							| il risparmio intelligente... 
+							br
+							| e divertente!
+				ion-slide
+					.box
+						i.icon.ion-ios-eye
+						.text
+							| scegli la tua vroom...
+							br
+							| e parti! 

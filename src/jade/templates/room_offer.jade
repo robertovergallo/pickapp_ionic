@@ -1,0 +1,184 @@
+ion-view.room
+	ion-nav-title Offerta
+	ion-subheader.bar.bar-subheader(ng-class="{'bar-red': travel_offer.is_applied, 'bar-blue': travel_offer.is_approved }" ng-if="travel_offer.is_applied || travel_offer.is_approved")
+		.message
+			p(ng-if="travel_offer.is_applied") ti sei candidato
+			p(ng-if="travel_offer.is_approved") sei stato approvato
+	ion-content(ng-class="{'has-subheader': travel_offer.is_applied, 'has-subheader': travel_offer.is_approved}")
+		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
+		.room_map(ng-click="showMapModal()" style="background-image: url(http://maps.googleapis.com/maps/api/staticmap?center={{travel_offer.starting_lat}},{{travel_offer.starting_lng}}9&zoom=16&size=600x300&maptype=roadmap&format=png)")
+			i.ion-location
+			i.ion-android-open
+			.room_address {{travel_offer.starting_address}}
+
+		.list.list-inset
+			.item.item-avatar(ng-click="showProfileDialog(travel_offer.driver.id)")
+				img(src="{{travel_offer.driver.profile_image_url}}")
+				h2(ng-if="!travel_offer.driver.surname") {{travel_offer.driver.name}}
+				h2(ng-if="travel_offer.driver.surname") {{travel_offer.driver.name}} {{travel_offer.driver.surname}} 
+				p {{travel_offer.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+			.item.item-icon-left
+				i.icon.ion-ios-flag.balanced
+				b Da: 
+				| {{travel_offer.starting_address}}
+			.item.item-icon-left.item-icon-right(ng-if="travel_offer.travel_stops.length > 0" ng-click="showTravelStopsModal()")
+				i.icon.ion-ios-location-outline.positive
+				| Fermate intermedie
+				i.icon.ion-ios-arrow-right
+			.item.item-icon-left(ng-if="travel_offer.travel_stops.length == 0")
+				i.icon.ion-ios-location-outline.positive
+				| No Fermate intermedie
+			.item.item-icon-left
+				i.icon.ion-ios-location.assertive
+				b A: 
+				| {{travel_offer.room.name}}
+			.item.item-icon-left
+				i.icon.ion-model-s.energized
+				b {{travel_offer.car.model}} 
+				| ({{travel_offer.car.plate}})
+
+		.row(style="padding-top: 0px; padding-bottom: 0px;")
+			.col(style="padding-top: 0px; padding-bottom: 0px;"  ng-if="!travel_offer.is_applied && !travel_offer.is_approved && !travel_offer.is_owner && checkTravelDate()")
+				.button.button-block.button-positive(ng-click="applyForTravel()") Candidati
+			.col(style="padding-top: 0px; padding-bottom: 0px;")
+				.button.button-block.button-energized(ng-click="openChat()") Chat Pubblica
+
+		.row(style="padding-top: 0px; padding-bottom: 0px;" ng-show="!travel_offer.has_private_chat && !travel_offer.is_owner" ng-click="createPrivateChat()")
+			.col(style="padding-top: 0px; padding-bottom: 0px;")
+				.button.button-block.button-balanced 
+					| Contatta 
+					span {{travel_offer.driver.name}} {{travel_offer.driver.surname}}
+
+		.row(style="padding-top: 0px; padding-bottom: 0px;" ng-show="travel_offer.has_private_chat && !travel_offer.is_owner" ng-click="getPrivateChat(travel_offer.private_chat_id)")
+			.col(style="padding-top: 0px; padding-bottom: 0px;")
+				.button.button-block.button-balanced 
+					| Contatta 
+					span {{travel_offer.driver.name}} {{travel_offer.driver.surname}}
+
+		.row(style="padding-top: 0px; padding-bottom: 0px;" ng-if="travel_offer.is_applied && !travel_offer.is_approved && !travel_offer.is_owner")
+			.col(style="padding-top: 0px; padding-bottom: 0px;")
+				.button.button-block.button-assertive(ng-click="cancelApplicationForTravel()")
+					| Annulla candidatura
+
+		.row(ng-if="travel_offer.is_owner && travel_offer.approved_users.length > 0")
+			.col
+				.section_title
+					h2 Utenti Accettati ({{travel_offer.approved_count}}/{{travel_offer.available_sits}})
+				.list
+					.item.item-avatar.item-icon-right(ng-repeat="approved_user in travel_offer.approved_users" ng-click="showProfileDialog(approved_user.user.id)")
+						img(src="{{approved_user.user.profile_image_url}}")
+						h2(style="padding-top: 10px") {{approved_user.user.name}} {{approved_user.user.surname}} 
+						i.icon.ion-close-circled.assertive(ng-click="cancelApprovalForTravel(approved_user.user.id)")
+	
+		.row(ng-if="travel_offer.is_owner && travel_offer.applied_users.length > 0")
+			.col
+				.section_title
+					h2 Utenti Candidati
+				.list
+					.item.item-avatar.item-icon-right(ng-repeat="applied_user in travel_offer.applied_users" ng-click="showProfileDialog(applied_user.user.id)")
+						img(src="{{applied_user.user.profile_image_url}}")
+						h2(style="padding-top: 10px") {{applied_user.user.name}} {{applied_user.user.surname}}
+						i.icon.ion-checkmark-circled.balanced(ng-click="approveForTravel(applied_user.user.id)" ng-if="(travel_offer.available_sits - travel_offer.approved_count) > 0")
+
+		.row(ng-if="travel_offer.is_owner && travel_offer.private_chats.length > 0")
+			.col
+				.section_title
+					h2 Chat Private
+				.list
+					.item.item-avatar.item-icon-right(ng-repeat="chat in travel_offer.private_chats")
+						img(src="{{chat.passenger.profile_image_url}}")
+						h2(style="padding-top: 10px") {{chat.passenger.name}} {{chat.passenger.surname}} 
+						i.icon.ion-chatbubbles.positive(ng-click="getPrivateChat(chat.id)")
+
+
+		.row
+			.col
+				.button.button-block.button-assertive(ng-if="travel_offer.is_owner" ng-click="destroyTravel()") Elimina viaggio
+
+//- script(id='map-modal.html', type='text/ng-template')
+//- 	ion-modal-view.map_modal
+//- 		ion-header-bar
+//- 			h1.title.positive Mappa
+//- 			.buttons
+//- 				button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeMapModal()")
+//- 		ion-content(scroll="false" data-tap-disabled="false")
+//- 			ui-gmap-google-map(center="map.center" zoom="map.zoom" dragging="true" events="map.events")
+//- 				ui-gmap-marker(coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id")
+
+//- script(id='travel-stops-modal.html', type='text/ng-template')
+//- 	ion-modal-view
+//- 		ion-header-bar
+//- 			h1.title.positive Fermate Intermedie
+//- 			.buttons
+//- 				button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeTravelStopsModal()")
+//- 		ion-content
+//- 			ion-list
+//- 				ion-item.item-icon-left(ng-repeat="stop in travel_offer.travel_stops")
+//- 					i.icon.ion-ios-location-outline.positive
+//- 					| {{stop.address}}
+
+//- script(id='chat-modal.html' type='text/ng-template')
+//- 	ion-modal-view.chat
+//- 		ion-header-bar
+//- 			h1.title.positive Chat Pubblica
+//- 			.buttons
+//- 				button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeChatModal()")
+//- 		ion-content(scroll="true" delegate-handle="chat_pane")
+//- 			.message-wrapper(ng-repeat="message in travel_offer.public_messages | orderBy:'created_at'")
+//- 				div(ng-if='!message.is_author')
+//- 					img.profile-pic.left(ng-src='{{message.author.profile_image_url}}')
+//- 					.chat-bubble.left
+//- 						.message(ng-bind-html='message.content | nl2br', autolinker='')
+//- 						.message-detail
+//- 							span.bold(ng-click='viewProfile(message)' ng-if="message.author.surname") {{message.author.name}} {{message.author.surname}}
+//- 							span.bold(ng-click='viewProfile(message)' ng-if="!message.author.surname") {{message.author.name}}
+
+//- 				div(ng-if='message.is_author')
+//- 					img.profile-pic.right(ng-click='viewProfile(message)', ng-src='{{user.profile_image_url}}')
+//- 					.chat-bubble.right
+//- 						.message(ng-bind-html='message.content | nl2br', autolinker='')
+//- 						.message-detail
+//- 							span.bold(ng-click='viewProfile(message)' ng-if="user.surname") {{user.name}} {{user.surname}}
+//- 							span.bold(ng-click='viewProfile(message)' ng-if="!user.surname") {{user.name}}
+				
+//- 				.cf
+
+//- 		form(name='sendMessageForm' ng-submit='handleMessageNewClick(travel_offer.room.id, travel_offer.id)' novalidate='')
+//- 			ion-footer-bar.bar-stable.item-input-inset.message-footer.bar-footer-chat(keyboard-attach='')
+//- 				label.item-input-wrapper
+//- 					textarea(style="width:100%" ng-model='newTravelOfferMessage.content' value='' placeholder='Messaggio...' required='' minlength='1' maxlength='1500' msd-elastic='')
+//- 				.footer-btn-wrap
+//- 					button.button.button-icon.icon.ion-paper-airplane.footer-btn(type='submit' ng-disabled="!newTravelOfferMessage.content || newTravelOfferMessage.content === ''")
+
+//- script(id='private-chat-modal.html' type='text/ng-template')
+//- 	ion-modal-view.chat
+//- 		ion-header-bar
+//- 			h1.title.positive Chat Privata
+//- 			.buttons
+//- 				button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closePrivateChatModal()")
+//- 		ion-content(scroll="true" delegate-handle="private_chat_pane")
+//- 			.message-wrapper(ng-repeat="message in private_messages | orderBy:'created_at'")
+//- 				div(ng-if='!message.is_owner')
+//- 					img.profile-pic.left(ng-src='{{message.author.profile_image_url}}')
+//- 					.chat-bubble.left
+//- 						.message(ng-bind-html='message.content | nl2br', autolinker='')
+//- 						.message-detail
+//- 							span.bold(ng-click='viewProfile(message)' ng-if="message.author.surname") {{message.author.name}} {{message.author.surname}}
+//- 							span.bold(ng-click='viewProfile(message)' ng-if="!message.author.surname") {{message.author.name}}
+
+//- 				div(ng-if='message.is_owner')
+//- 					img.profile-pic.right(ng-click='viewProfile(message)', ng-src='{{user.profile_image_url}}')
+//- 					.chat-bubble.right
+//- 						.message(ng-bind-html='message.content | nl2br', autolinker='')
+//- 						.message-detail
+//- 							span.bold(ng-click='viewProfile(message)' ng-if="user.surname") {{user.name}} {{user.surname}}
+//- 							span.bold(ng-click='viewProfile(message)' ng-if="!user.surname") {{user.name}}
+				
+//- 				.cf
+
+//- 		form(name='sendMessageForm' ng-submit='handlePrivateMessageNewClick(travel_offer.room.id, travel_offer.id)' novalidate='')
+//- 			ion-footer-bar.bar-stable.item-input-inset.message-footer.bar-footer-chat(keyboard-attach='')
+//- 				label.item-input-wrapper
+//- 					textarea(style="width:100%" ng-model='newTravelOfferPrivateMessage.content' value='' placeholder='Messaggio...' required='' minlength='1' maxlength='1500' msd-elastic='')
+//- 				.footer-btn-wrap
+//- 					button.button.button-icon.icon.ion-paper-airplane.footer-btn(type='submit' ng-disabled="!newTravelOfferPrivateMessage.content || newTravelOfferPrivateMessage.content === ''")

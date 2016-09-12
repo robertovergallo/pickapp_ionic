@@ -1,0 +1,188 @@
+ion-view.room
+	ion-nav-title {{room.name}}
+	ion-content
+		.room_header
+			.bg(style="background-image: url({{room.image_url}})")
+			.room_info(ng-if="!room.is_restricted")
+				span
+					i.icon.ion-ios-people.assertive
+					b {{room.preferred_count}} 
+					| iscritti
+				span
+					i.icon.ion-arrow-swap.positive
+					b {{room.travels.length}} 
+					| viaggi
+			p {{room.name}}
+
+		.room_map(ng-click="showMapModal()" ng-if="!room.is_restricted" style="background-image: url(http://maps.googleapis.com/maps/api/staticmap?center={{room.lat}},{{room.long}}9&zoom=16&size=600x300&maptype=roadmap&format=png)")
+			i.ion-location
+			i.ion-android-open
+			.room_address {{room.address}}
+
+		.list(style="margin: 0px" ng-if="!room.is_restricted")
+			.item.room_description(ng-click="showDescriptionModal()") {{room.description}}
+
+		.row.actions_row(ng-if="!room.is_restricted")
+			.col.fav_butt_col
+				button.button.button-block.button-energized.fav_button(ng-click="toggleRoomFavourite()")
+					i.ion-ios-star(ng-if="room.is_favourite")
+					i.ion-ios-star-outline(ng-if="!room.is_favourite")
+			.col
+				button.button.button-block.button-energized(ng-click="showTravelRequestModal()") Richiedi
+			.col(ng-if="user.is_driver")
+				button.button.button-block.button-assertive(ng-click="showTravelOfferModal()") Offri
+		.row.actions_row(ng-if="!room.is_restricted")
+			.col
+				button.button.button-block.button-calm(ui-sref="app.room_travels_search({room_id: room.id})") Cerca nella stanza
+
+		.row.actions_row(ng-if="!room.is_restricted")
+			.col
+				button.button.button-block.button-assertive(ui-sref="app.profile_driver()" ng-if="!user.is_driver") Diventa Guidatore
+
+		.list.travels_actions(ng-if="!room.is_restricted")
+			a.item.item-icon-right(ui-sref="app.room_requests({room_id: room.id})")
+				| Richieste di Passaggio
+				i.icon.ion-ios-arrow-right
+			a.item.item-icon-right(ui-sref="app.room_offers({room_id: room.id})")
+				| Offerte di passaggio
+				i.icon.ion-ios-arrow-right
+
+		.row(ng-if="room.is_restricted" )
+			.col
+				p(style="color: #666; font-size: 14px; line-height: 19px; text-align:center; margin: 20px 0px;") {{room.non_partecipant_message}}
+
+
+script(id='travel-request-modal.html', type='text/ng-template')
+	ion-modal-view
+		ion-header-bar.bar-positive
+			h1.title.positive Richiesta passaggio
+			.buttons
+				button.button.button-icon.ion-ios-close-outline(ng-click="closeTravelRequestModal()")
+		ion-content
+			.list
+				ion-toggle(ng-init="newTravelRequest.towards_room = true" ng-model="newTravelRequest.towards_room" toggle-class="toggle-calm")
+					span(ng-if="!newTravelRequest.towards_room") Da 
+					span(ng-if="newTravelRequest.towards_room") Verso 
+					| {{room.name}}
+
+				ion-toggle(ng-init="newTravelRequest.can_repay = false" ng-model="newTravelRequest.can_repay" toggle-class="toggle-calm") Possibilità di rimborso
+
+				label.item.item-input(ng-show="newTravelRequest.towards_room == true")
+					input(type="text" placeholder="Indirizzo di Partenza" ng-model="newTravelRequest.starting_address_addr")
+
+				label.item.item-input
+					input(type="text" placeholder="Città" ng-model="newTravelRequest.starting_address_city")
+
+				label.item.item-input
+					input(type="number" placeholder="CAP" ng-model="newTravelRequest.starting_address_cap")
+
+				label.item.item-input(ng-show="newTravelRequest.towards_room == false")
+					input(type="text" placeholder="Indirizzo di Destinazione" ng-model="newTravelRequest.starting_address")
+
+				ion-toggle(ng-init="newTravelRequest.only_with_feedback = false" ng-model="newTravelRequest.only_with_feedback" toggle-class="toggle-calm") Solo con Feedback
+
+				.item(ng-click="newTravelRequestDatePicker()")
+					| Data di partenza
+					span.item-note(ng-show="!newTravelRequest.one_way_datetime") Seleziona data
+					span.item-note(ng-show="newTravelRequest.one_way_datetime") {{newTravelRequest.one_way_datetime | date:"dd MMMM 'alle' HH:mm"}}
+					
+				ion-toggle(ng-init="newTravelRequest.flexible_departure = false" ng-model="newTravelRequest.flexible_departure" toggle-class="toggle-calm") Orario flessibile
+
+			.row
+				.col
+					.button.button-block.button-positive(ng-click="sendNewTravelRequest()") Invia
+
+script(id='travel-offer-modal.html', type='text/ng-template')
+	ion-modal-view
+		ion-header-bar.bar-positive
+			h1.title.positive Offerta passaggio
+			.buttons
+				button.button.button-icon.ion-ios-close-outline(ng-click="closeTravelOfferModal()")
+		ion-content
+			.list
+				ion-toggle(ng-init="newTravelOffer.towards_room = true" ng-model="newTravelOffer.towards_room" toggle-class="toggle-calm") 
+					span(ng-if="!newTravelOffer.towards_room") Da 
+					span(ng-if="newTravelOffer.towards_room") Verso 
+					| {{room.name}}
+
+				.item.item-input.item-select
+					.input-label Seleziona Auto
+					select(ng-options="car.id as car.model for car in cars" ng-model="newTravelOffer.car_id")
+						option(value="?" selected="true")
+
+				label.item.item-input(ng-show="newTravelOffer.towards_room == true")
+					input(type="text" placeholder="Indirizzo di Partenza" ng-model="newTravelOffer.user_address_addr")
+
+				label.item.item-input(ng-show="newTravelOffer.towards_room == false")
+					input(type="text" placeholder="Indirizzo di Destinazione" ng-model="newTravelOffer.user_address_addr")
+
+				label.item.item-input
+					input(type="text" placeholder="Città" ng-model="newTravelOffer.user_address_city")
+
+				label.item.item-input
+					input(type="number" placeholder="CAP" ng-model="newTravelOffer.user_address_cap")
+
+				.item(ng-click="newTravelOfferDatePicker()")
+					| Data di partenza
+					span.item-note(ng-show="!newTravelOffer.departure_datetime") Seleziona data
+					span.item-note(ng-show="newTravelOffer.departure_datetime") {{newTravelOffer.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+
+				ion-toggle(ng-init="newTravelOffer.flexible_departure = false" ng-model="newTravelOffer.flexible_departure" toggle-class="toggle-calm") Orario flessibile
+
+				ion-toggle(ng-init="newTravelOffer.can_repay = false" ng-model="newTravelOffer.can_repay" toggle-class="toggle-calm") Richiedo rimborso
+
+				ion-toggle(ng-init="newTravelOffer.only_with_feedback = false" ng-model="newTravelOffer.only_with_feedback" toggle-class="toggle-calm") Solo utenti con recensioni
+
+				ion-toggle(ng-init="newTravelOffer.backwards_too = false" ng-model="newTravelOffer.backwards_too" toggle-class="toggle-calm") Anche ritorno?
+
+				.item(ng-click="newTravelOfferBackDatePicker()" ng-show="newTravelOffer.backwards_too")
+					| Data di ritorno
+					span.item-note(ng-show="!newTravelOffer.back_departure_datetime") Seleziona data
+					span.item-note(ng-show="newTravelOffer.back_departure_datetime") {{newTravelOffer.back_departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+
+				ion-toggle(ng-init="newTravelOffer.is_recursive = false" ng-model="newTravelOffer.is_recursive" toggle-class="toggle-calm") Vuoi ripetere questo viaggio?
+
+				label.item.item-input(ng-show="newTravelOffer.is_recursive")
+					input(type="number" placeholder="Per quante settimane?" ng-model="newTravelOffer.repetitions_amount")
+				
+				.row
+					.col
+						.section_title
+							h2 Tappe Intermedie
+
+				label.item.item-input(ng-repeat="travel_stop in newTravelOffer.travel_stops")
+					input(type="text" placeholder="Indirizzo fermata" ng-model="travel_stop.address")
+
+				.row
+					.col(ng-show="newTravelOffer.travel_stops.length > 0")
+						.button.button-block.button-assertive(ng-click="removeTravelStop()") Rimuovi Tappa
+					.col
+						.button.button-block.button-balanced(ng-click="addTravelStop()") Aggiungi Tappa
+
+			.row
+				.col
+					.button.button-block.button-positive(ng-click="sendNewTravelOffer()") Invia
+			
+
+script(id='map-modal.html', type='text/ng-template')
+	ion-modal-view.map_modal
+		ion-header-bar
+			h1.title.positive Mappa
+			.buttons
+				button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeMapModal()")
+		ion-content(scroll="false" data-tap-disabled="false")
+			ui-gmap-google-map(center="map.center" zoom="map.zoom" dragging="true" events="map.events")
+				ui-gmap-marker(coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id")
+
+script(id='description-modal.html', type='text/ng-template')
+	ion-modal-view.map_modal
+		ion-header-bar
+			h1.title.positive Info
+			.buttons
+				button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeDescriptionModal()")
+		ion-content
+			.row
+				.col
+					p {{room.description}}
+
+			

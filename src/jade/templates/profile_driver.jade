@@ -1,0 +1,59 @@
+ion-view.profile_driver
+	ion-nav-title Stato Guidatore
+	ion-content(padding="true")
+		div(ng-if="!user.pending_driver_verification && !user.is_driver")
+			.card
+				.item.item-divider Patente
+				.item.item-text-wrap
+					p(ng-if="!driverDetails.patente_data.src") Nessuna foto selezionata.
+					img.image_data(ng-if="driverDetails.patente_data.src" src="{{driverDetails.patente_data.src}}")
+				a.item.item-icon-left(ng-click="selectPhoto('patente')")
+					i.icon.ion-upload 
+					| Seleziona Foto
+
+				label.item.item-input.item-select
+					.input-label Tipo Patente
+					select(ng-model="driverDetails.license_type")
+						option(value="B") B
+						option(value="C") C
+
+				label.item.item-input
+					input(type="text" placeholder="Numero Patente" ng-model="driverDetails.license_number")
+
+				label.item.item-input
+					input(type="text" placeholder="Comune di Rilascio" ng-model="driverDetails.license_release_city_common")
+
+				label.item.item-input.item-select
+					.input-label Provincia
+					select(ng-options="provincia.sigla as (provincia.nome + '(' + provincia.sigla + ')') for provincia in dati_italia.province | orderBy: 'nome'" name="prov" id="prov" ng-model="driverDetails.license_release_city")
+						option( value="?" selected="true") La tua provincia
+
+				label.item.item-input
+					span.input-label Data di Rilascio
+					input(type="date" ng-model="driverDetails.license_release_date")
+
+				label.item.item-input
+					span.input-label Data di Scadenza
+					input(type="date" placeholder="Data di Scadenza" ng-model="driverDetails.license_expire_date")
+
+				ion-checkbox.terms(ng-model="driverDetails.accept_terms") Accetto i termini e le condizioni d'uso
+
+			.button.button-block.button-positive(ng-click="handleBecameDriverForm()") Invia
+
+			.list.list-inset
+				a.item(href="#" ng-click="showTerms()" style="color: #999;") Vedi termini e condizioni
+
+		.card(ng-if="user.pending_driver_verification && !user.is_driver")
+			.item.item-text-wrap
+				b Dati guidatore ricevuti!
+				br
+				| La verifica dei tuoi dati come guidatore verrà eseguita il prima possibile.
+
+		.card(ng-if="!user.pending_driver_verification && user.is_driver")
+			.item.item-text-wrap
+				b Guidatore autorizzato!
+				br
+				| Sei un guidatore PickApp autorizzato.
+		
+		//- .image(ng-click="selectPhoto()" style='background-image: url({{registerForm.profile_image_data.src}})')
+		//- 						span(ng-if="!registerForm.profile_image_data.src") Foto Profilo

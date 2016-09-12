@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width" name="viewport")
+    title PickApp
+
+    link(href="css/ionic.app.min.css" rel="stylesheet")
+    
+    // gmap
+    script(src='https://maps.googleapis.com/maps/api/js?sensor=false')
+
+    // ionic/angularjs js
+    script(src="lib/ionic/js/ionic.bundle.js")
+    script(src="lib/angular-cookie/angular-cookie.min.js")
+    script(src="lib/ng-token-auth/dist/ng-token-auth.js")
+    script(src="lib/angular-messages/angular-messages.min.js")
+    script(src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js")
+
+    // your app's js
+    script(src="js/md5.js")
+    script(src="js/anagrafica.js")
+    script(src="js/gmaps.js")
+    script(src="js/lodash.js")
+    script(src="js/app.js")
+
+    // cordova script (this will be a 404 during development)
+    script(src="js/ng-cordova.min.js")
+    //script(src="cordova.js")
+        
+  body(ng-app="pickapp")
+    ion-nav-view
+    

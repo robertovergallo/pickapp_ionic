@@ -1,0 +1,220 @@
+ion-nav-bar
+	.bubblebadge
+		position: absolute
+		top: 0px
+		right: 0px
+		width: 20px
+		height: 20px
+		line-height: 20px
+		font-weight: 700
+		z-index: 99
+		text-align: center
+		border-radius: 50%
+		font-size: 12px
+		background: $pickapp_red
+
+.bar-subheader
+	max-height: 40px
+
+.bar-red
+	background: $pickapp_red
+	border-bottom: 1px solid darken($pickapp_red, 10%)
+	color: #fff
+
+	.button
+		color: #fff
+
+	.message
+		+display(flex)
+		padding: 0px
+		&:before
+			content: ''
+			z-index: 0
+			display: block
+			width: 100%
+			height: 17px
+			position: absolute
+			border-bottom: 2px dashed #fff
+
+		p
+			padding: 0px 7px
+			margin: 0px auto
+			height: 30px
+			line-height: 30px
+			background: $pickapp_red
+			z-index: 1
+			font-size: 14px
+			font-weight: 700
+			text-transform: uppercase
+
+.bar-green
+	background: $pickapp_green
+	border-bottom: 1px solid darken($pickapp_green, 10%)
+	color: #fff
+
+	.button
+		color: #fff
+
+	.message
+		+display(flex)
+		padding: 0px
+		&:before
+			content: ''
+			z-index: 0
+			display: block
+			width: 100%
+			height: 17px
+			position: absolute
+			border-bottom: 2px dashed #fff
+
+		p
+			padding: 0px 7px
+			margin: 0px auto
+			height: 30px
+			line-height: 30px
+			background: $pickapp_green
+			z-index: 1
+			font-size: 14px
+			font-weight: 700
+			text-transform: uppercase
+
+
+.bar-blue
+	background: $pickapp_blue
+	border-bottom: 1px solid darken($pickapp_blue, 10%)
+	color: #fff
+
+	.button
+		color: #fff
+
+	.message
+		+display(flex)
+		padding: 0px
+		&:before
+			content: ''
+			z-index: 0
+			display: block
+			width: 100%
+			height: 17px
+			position: absolute
+			border-bottom: 2px dashed #fff
+
+		p
+			padding: 0px 7px
+			margin: 0px auto
+			height: 30px
+			line-height: 30px
+			background: $pickapp_blue
+			z-index: 1
+			font-size: 14px
+			font-weight: 700
+			text-transform: uppercase
+
+.bar-green
+	background: $pickapp_green
+	border-bottom: 1px solid darken($pickapp_green, 10%)
+	color: #fff
+
+	.button
+		color: #fff
+
+	&.footer
+		.button
+			margin: auto
+			padding: 0px 15px !important
+			background: rgba(#fff, .15)
+			color: #fff
+			font-weight: 700
+
+		.submenu
+			position: absolute
+			z-index: 9
+			top: 0px
+			left: 0px
+			width: 100%
+			height: 50px
+			background: rgba(#fff, .95)
+			border: none
+			visibility: hidden
+			opacity: 0
+
+			+transition ( all .3s ease-in-out )
+			+transform ( scale(0.3) translate3D(0px, 0px, 0px) )
+
+			&.open
+				opacity: 1
+				visibility: visible
+
+				+transform ( scale(1) translate3D(0px, -48px, 0px) )
+
+			.preferred_rooms
+				min-width: 500vw
+				
+				.room
+					display: inline-block
+					background: rgba($pickapp_blue, .75)
+					margin: 5px
+					padding: 0px 10px
+					height: 40px
+					line-height: 40px
+					border-radius: 2px
+					font-weight: 500
+
+.section_title
+	position: relative
+	height: 30px
+	margin: 15px 0px
+
+	&:after
+		content: ''
+		z-index: 1
+		position: absolute
+		width: 100%
+		height: 17px
+		border-bottom: 2px dashed $pickapp_gray
+		top: 0px
+		left: 0px
+
+	h2
+		position: relative
+		padding: 0px 5px 0px 0px
+		height: 30px
+		line-height: 30px
+		font-size: 18px
+		font-weight: 700
+		text-transform: uppercase
+		color: $pickapp_green
+		display: inline-block
+		background: #fff
+		z-index: 2
+
+ion-view, .cloak
+	opacity: 1 !important
+	+transition ( opacity .3 ease-in-out )
+
+	&.empty
+		opacity: 0 !important
+
+
+.form-errors
+	position: relative
+	padding-top: 3px
+	padding-bottom: 3px
+	padding-left: 40px
+	background: $assertive
+	border-color: $assertive
+
+	&:before
+		position: absolute
+		top: 3px
+		left: 20px
+		width: 20px
+		height: 20px
+		content: '\f126'
+		font-size: 14px
+		color: white
+		font-family: "Ionicons"
+
+	.form-error
+		font-size: 12px
+		color: white

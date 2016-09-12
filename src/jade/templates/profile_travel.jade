@@ -1,0 +1,51 @@
+ion-view.room
+	ion-nav-title Offerta
+	ion-subheader.bar.bar-subheader(ng-class="{'bar-red': travel.is_applied, 'bar-blue': travel.is_approved }" ng-if="travel.is_applied || travel.is_approved")
+		.message
+			p(ng-if="travel.is_applied") ti sei candidato
+			p(ng-if="travel.is_approved") sei stato approvato
+	ion-content(ng-class="{'has-subheader': travel.is_applied|| travel.is_approved}")
+		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
+		.room_map(ng-click="showMapModal()" style="background-image: url(http://maps.googleapis.com/maps/api/staticmap?center={{travel.starting_lat}},{{travel.starting_lng}}9&zoom=16&size=600x300&maptype=roadmap&format=png)")
+			i.ion-location
+			i.ion-android-open
+			.room_address {{travel.starting_address}}
+
+		.list.list-inset
+			.item.item-avatar
+				img(src="{{travel.driver.profile_image_url}}")
+				h2(ng-if="!travel.driver.surname") {{travel.driver.name}}
+				h2(ng-if="travel.driver.surname") {{travel.driver.name}} {{travel.driver.surname}} 
+				p {{travel.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+			.item.item-icon-left
+				i.icon.ion-ios-flag.balanced
+				b Da: 
+				| {{travel.starting_address}}
+			.item.item-icon-left.item-icon-right(ng-if="travel.travel_stops.length > 0")
+				i.icon.ion-ios-location-outline.positive
+				| Fermate intermedie
+				i.icon.ion-ios-arrow-right
+			.item.item-icon-left
+				i.icon.ion-ios-location.assertive
+				b A: 
+				| {{travel.room.name}}
+
+		.row(style="padding-top: 0px; padding-bottom: 0px;" ng-if="travel.waiting_for_confirm && !travel.completed && travel.is_owner")
+			.col(style="padding-top: 0px; padding-bottom: 0px;")
+				.button.button-block.button-positive(ng-click="markTravelAsCompleted()")
+					| Segna come Completato
+
+		.list.inset-list(ng-if="travel.completed && travel.is_owner")
+			.item.item-icon-left
+				i.icon.ion-ios-checkmark.positive
+				| Compleato!
+
+		.row(ng-if="travel.is_owner")
+			.col
+				.section_title
+					h2 Utenti Partecipanti
+				.list
+					.item.item-avatar(ng-repeat="approved_user in travel.approved_users")
+						img(src="{{approved_user.user.profile_image_url}}")
+						h2(style="padding-top: 10px") {{approved_user.user.name}} {{approved_user.user.surname}} 
+						

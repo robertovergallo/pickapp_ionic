@@ -1,0 +1,8 @@
+ion-view.rooms
+  ion-nav-title VROOMS
+  ion-content
+    .what qual è la tua vroom oggi?
+    .rooms_list
+      .room(ng-repeat="room in room_categories" ui-sref="app.rooms_category({room_category_id: room.id})")
+        .bg(style="background-image: url({{room.image_url}})")
+        p {{room.name}}

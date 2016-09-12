@@ -1,0 +1,19 @@
+ion-modal-view.profile_dialog
+  ion-header-bar
+    h1.title.positive {{profileModal.profile.name}} {{profileModal.profile.surname}}
+    .buttons
+      button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeProfileModal()")
+  ion-content(scroll="true")
+    .review(ng-repeat="review in profileModal.profile.received_reviews")
+      p Recensione di {{review.user.name}} {{review.user.surname}}
+      .content {{review.content}}
+      .meta
+        .stars.small
+          .star(ng-class="{'selected': review.rating >= 2}")
+          .star(ng-class="{'selected': review.rating >= 4}")
+          .star(ng-class="{'selected': review.rating >= 6}")
+          .star(ng-class="{'selected': review.rating >= 8}")
+          .star(ng-class="{'selected': review.rating >= 10}")
+    
+
+  

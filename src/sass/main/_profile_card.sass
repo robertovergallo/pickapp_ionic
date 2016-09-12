@@ -1,0 +1,104 @@
+.profile_dialog
+  min-width: 250px
+  width: 100%
+  max-width: 450px
+
+  .photo
+    width: 40px
+    height: 40px
+    margin-right: 10px
+    background-size: cover
+    background-position: center
+    background-repeat: no-repeat
+    border-radius: 50%
+
+
+  .review
+    margin: 0px 15px
+    margin-bottom: 15px
+    padding: 15px
+    background: #f8f8f8
+    border-radius: 10px
+    +borderbox
+
+    p
+      margin: 0px
+      margin-bottom: 10px
+      padding: 0px
+      font-size: 13px
+      line-height: 16px
+      color: $pickapp_blue
+      font-weight: 700
+
+    textarea, .content
+      background: white
+      border: none
+      padding: 10px
+      margin-bottom: 10px
+      display: block
+      width: 100%
+      font-size: 13px
+      color: #666
+      border-radius: 5px
+      +borderbox
+
+    .meta
+      +display ( flex )
+
+      .stars
+        margin-right: auto
+
+        .star
+          position: relative
+          float: left
+          width: 30px
+          height: 30px
+          cursor: pointer
+
+          &:before
+            content: '\f006'
+            font-family: "FontAwesome"
+            position: absolute
+            width: 30px
+            height: 30px
+            text-align: center
+            line-height: 30px
+            color: $orange
+            font-size: 24px
+
+          &:after
+            content: '\f005'
+            font-family: "FontAwesome"
+            position: absolute
+            width: 30px
+            height: 30px
+            text-align: center
+            line-height: 30px
+            color: $orange
+            font-size: 24px
+            display: none
+
+          &.active, &.selected
+            &:after
+              display: block
+
+        &.small
+          margin: auto
+          margin-right: 0px
+
+          .star
+            width: 25px
+            height: 25px
+            cursor: default
+
+            &:before
+              width: 25px
+              height: 25px
+              line-height: 25px
+              font-size: 20px
+
+            &:after
+              width: 25px
+              height: 25px
+              line-height: 25px
+              font-size: 20px

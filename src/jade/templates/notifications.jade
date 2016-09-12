@@ -1,0 +1,45 @@
+ion-view.notifications
+	ion-nav-title Notifiche
+	ion-nav-buttons(side="right")
+		button.button.button-clear(ng-click="toggleAllNotifications()")
+			span(ng-show="!display_all_notifications") Archivio
+			span(ng-show="display_all_notifications") Non Lette
+	ion-content
+		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
+		.button-bar
+			.button.button-clear(ng-class="{'button-positive': active_section == 0}" ng-click="setActiveSection(0)") Notifiche
+			.button.button-clear(ng-class="{'button-positive': active_section == 1}" ng-click="setActiveSection(1)") Messaggi
+
+		ion-slide-box(show-pager="false" active-slide="active_section")
+			ion-slide
+				.card(ng-repeat="notification in notifications" ng-if="!notification.clicked || display_all_notifications")
+					.item.item-divider {{notification.title}}
+					.item.item-text-wrap
+						p(ng-bind-html="notification.body")
+					.item.tabs.tabs-secondary.tabs-icon-left
+						a.tab-item(ng-click="setNotificationAsClicked(notification.id)" ng-if="!notification.clicked")
+							i.icon.ion-checkmark-circled
+							| Segna come letta
+						a.tab-item.positive(ng-if="notification.clicked")
+							i.icon.ion-checkmark
+							| Letto
+						a.tab-item(ng-click="convertUrl(notification)")
+							i.icon.ion-android-open
+							| Dettagli
+
+			ion-slide
+				.card(ng-repeat="message in messages" ng-if="!message.clicked || display_all_notifications")
+					.item.item-divider {{message.title}}
+					.item.item-text-wrap
+						p(ng-bind-html="message.body")
+					.item.tabs.tabs-secondary.tabs-icon-left
+						a.tab-item(ng-click="setNotificationAsClicked(message.id)" ng-if="!message.clicked")
+							i.icon.ion-checkmark-circled
+							| Segna come letta
+						a.tab-item.positive(ng-if="message.clicked")
+							i.icon.ion-checkmark
+							| Letto
+						a.tab-item(ng-click="convertUrl(message)")
+							i.icon.ion-android-open
+							| Dettagli
+				
