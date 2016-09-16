@@ -148,8 +148,6 @@ ion-nav-bar
 				+transform ( scale(1) translate3D(0px, -48px, 0px) )
 
 			.preferred_rooms
-				min-width: 500vw
-				
 				.room
 					display: inline-block
 					background: rgba($pickapp_blue, .75)
@@ -218,3 +216,44 @@ ion-view, .cloak
 	.form-error
 		font-size: 12px
 		color: white
+
+
+
+$hscroller-lateral-padding: 10px !default
+$hscroller-card-height: 160px !default
+$hscroller-card-width: 120px !default
+$hscroller-card-animate-time: 0.4s !default
+$hscroller-cards-to-animate: 12 !default
+
+
+
+div.hscroller
+	white-space: nowrap
+	overflow-y: hidden
+	overflow-x: scroll
+	padding-left: $hscroller-lateral-padding
+
+	-webkit-overflow-scrolling: touch
+	-webkit-tap-highlight-color: rgba(0,0,0,0)
+
+	&::-webkit-scrollbar
+		display: none
+
+
+
+div.hscroller-card
+	display: inline-block
+	background-color: #262626
+	vertical-align: middle
+	margin: 0 2px
+
+	span
+	
+
+	
+
+
+
+// @media screen and (min-width:1025px)
+// 	div.hscroller
+// 		overflow-x: hidden

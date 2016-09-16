@@ -1,6 +1,26 @@
-angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvider, $authProvider, auth_base) ->
+angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvider, $authProvider, auth_base, $ionicCloudProvider) ->
+
+  # Ionic Cloud
+
+  $ionicCloudProvider.init({
+    "core": {
+      "app_id": "aaa54618"
+    },
+    "push": {
+      "sender_id": "1084310756977",
+      "pluginConfig": {
+        "ios": {
+          "badge": true,
+          "sound": true
+        },
+        "android": {
+          "iconColor": "#8DC549"
+        }
+      }
+    }
+  })
   
-  # $httpProvider.interceptors.push 'authInterceptor'
+  $httpProvider.interceptors.push 'authInterceptor'
 
   $httpProvider.interceptors.push ($rootScope) ->
     {
@@ -18,10 +38,15 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   # auth
 
+  if window.location.protocol == 'http:'
+    use_proxy = true
+  else
+    use_proxy = false
+
   $authProvider.configure
     storage: 'localStorage'
     apiUrl: auth_base
-    forceValidateToken: false
+    forceValidateToken: true
     omniauthWindowType: 'inAppBrowser'
     authProviderPaths:
       facebook: '/auth/facebook'
@@ -32,7 +57,8 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
   $stateProvider.state 'app',
     url: '/app'
     abstract: true
-    templateUrl: 'templates/menu.html'
+    views: 'appContent':
+      templateUrl: 'templates/menu.html'
 
   $stateProvider.state 'app.home',
     url: '/home'
@@ -45,6 +71,15 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
     views: 'menu_content':
       templateUrl: 'templates/profile.html'
       controller: 'ProfileController'
+      resolve:
+        auth: ($auth) ->
+          $auth.validateUser()
+
+  $stateProvider.state 'app.user_travels',
+    url: '/user_travels/:travels'
+    views: 'menu_content':
+      templateUrl: 'templates/profile_travels.html'
+      controller: 'UserTravelsController'
       resolve:
         auth: ($auth) ->
           $auth.validateUser()
@@ -63,16 +98,6 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
     views: 'menu_content':
       templateUrl: 'templates/profile_driver.html'
       controller: 'ProfileDriverController'
-      resolve:
-        auth: ($auth) ->
-          $auth.validateUser()
-
-  $stateProvider.state 'app.profile_travels',
-    url: '/profile_travels/:travels'
-    cache: false
-    views: 'menu_content':
-      templateUrl: 'templates/profile_travels.html'
-      controller: 'ProfileTravelsController'
       resolve:
         auth: ($auth) ->
           $auth.validateUser()

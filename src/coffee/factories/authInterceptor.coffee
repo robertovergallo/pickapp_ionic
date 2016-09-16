@@ -1,8 +1,8 @@
 angular.module('pickapp').factory 'authInterceptor', ($injector) ->
   authInterceptor = request: (config) ->
     $injector.invoke ($http, $auth) ->
-      # $http.defaults.headers.common = $auth.retrieveData('auth_headers')
-      console.log $auth.retrieveData('auth_headers')
+      $http.defaults.headers.common = $auth.retrieveData('auth_headers') if window.location.protocol == 'http:'
+      #console.log $auth.retrieveData('auth_headers')
       # if config.url.match($auth.apiUrl())
       #   headers = $auth.retrieveData('auth_headers')
       #   # for property of headers

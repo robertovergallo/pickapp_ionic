@@ -1,6 +1,6 @@
 var auth;
 
-angular.module('pickapp', ['ionic', 'ionic.service.core', 'ng-token-auth', 'ngCordova', 'uiGmapgoogle-maps', 'ngMessages']);
+angular.module('pickapp', ['ionic', 'ionic.cloud', 'ng-token-auth', 'ngCordova', 'uiGmapgoogle-maps', 'ngMessages', 'ionic.contrib.ui.hscrollcards']);
 
 if (window.location.protocol === 'http:') {
   angular.module('pickapp').constant('api_base', '/api_base');
@@ -12,9 +12,9 @@ if (window.location.protocol === 'http:') {
 
 auth = {};
 
-angular.module('pickapp').run(function($rootScope, $ionicPlatform, $ionicModal, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicLoading, $state, $timeout, $auth, $ionicHistory, $ionicPopup, $http, $filter, Notification, User, Profile) {
+angular.module('pickapp').run(function($rootScope, $ionicPlatform, $ionicModal, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicLoading, $state, $timeout, $auth, $ionicHistory, $ionicPush, $ionicUser, $ionicAuth, $ionicPopup, $http, $filter, Notification, User, Profile) {
   return $ionicPlatform.ready(function() {
-    var badges, finallyRegisterPush, getNotifications, getUserDetails, loading_timeout, myDate, push, pushRegister, pushUnregister, user_has_photo;
+    var badges, finallyRegisterPush, getNotifications, getUserDetails, loading_timeout, myDate, pushRegister, pushUnregister, user_has_photo;
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
     }
@@ -24,10 +24,12 @@ angular.module('pickapp').run(function($rootScope, $ionicPlatform, $ionicModal, 
     if (window.cordova && window.cordova.InAppBrowser) {
       window.open = window.cordova.InAppBrowser.open;
     }
-    push = new Ionic.Push({
-      'debug': true,
-      'onNotification': function(notification) {
-        return getNotifications();
+    $rootScope.$on('$ionicView.afterEnter', function(e) {
+      var state;
+      state = $ionicHistory.currentView().stateName;
+      console.log(state);
+      if (state === 'app.profile') {
+        return $ionicNavBarDelegate.showBackButton(false);
       }
     });
     myDate = new Date();
@@ -130,43 +132,50 @@ angular.module('pickapp').run(function($rootScope, $ionicPlatform, $ionicModal, 
     };
     pushUnregister = function() {
       return User.clearDeviceTokens($rootScope.user.id).then(function(resp) {
-        Ionic.Auth.logout();
+        $ionicAuth.logout();
         $auth.signOut();
         return $ionicSideMenuDelegate.toggleLeft();
       }, function(error) {
-        Ionic.Auth.logout();
+        $ionicAuth.logout();
         $auth.signOut();
         return $ionicSideMenuDelegate.toggleLeft();
       });
     };
     pushRegister = function() {
       var ionic_user;
+      console.log("PUSH REG");
       ionic_user = {
         email: 'pick_user_' + $rootScope.user.id + '@pickapp.it',
         password: md5($rootScope.user.id)
       };
-      if (!Ionic.User.current().isAuthenticated()) {
-        return Ionic.Auth.login('basic', {
-          'remember': true
-        }, ionic_user).then(function() {
+      if (!$ionicAuth.isAuthenticated()) {
+        return $ionicAuth.login('basic', ionic_user).then(function() {
           return finallyRegisterPush();
         }, function(err) {
-          return Ionic.Auth.signup(ionic_user).then(function() {
-            return Ionic.Auth.login('basic', {
-              'remember': true
-            }, ionic_user).then(function() {
+          return $ionicAuth.signup(ionic_user).then(function() {
+            return $ionicAuth.login('basic', ionic_user).then(function() {
               return finallyRegisterPush();
             });
+          }, function(err) {
+            return console.log(err);
           });
         });
       }
     };
+    $rootScope.$on('cloud:push:notification', function(event, data) {
+      var msg;
+      msg = data.message;
+      return console.log(msg.title + ": " + msg.text);
+    });
     finallyRegisterPush = function() {
-      return push.register(function(data) {
-        console.log("Got Token:", data.token);
-        push.saveToken(data.token);
-        Ionic.User.current().save();
-        return User.updateDeviceTokens(data.token, $rootScope.user.id).then(function(resp) {
+      console.log("FINALLY REG PUSH");
+      return $ionicPush.register().then(function(t) {
+        return $ionicPush.saveToken(t);
+      }).then(function(t) {
+        console.log('Token saved:', t.token);
+        $ionicPush.saveToken(t);
+        $ionicUser.save();
+        return User.updateDeviceTokens(t.token, $rootScope.user.id).then(function(resp) {
           return console.log(resp);
         });
       });
@@ -232,6 +241,16 @@ angular.module('pickapp').run(function($rootScope, $ionicPlatform, $ionicModal, 
         return pushUnregister();
       });
       if (!$rootScope.user.id) {
+        if (window.location.protocol === 'http:') {
+          $timeout(function() {
+            var loginForm;
+            loginForm = {
+              email: 'a.macchieraldo@koodit.it',
+              password: 'password'
+            };
+            return $auth.submitLogin(loginForm);
+          }, 3000);
+        }
         return $rootScope.showAuthModal();
       }
     });
@@ -261,7 +280,26 @@ angular.module('pickapp').filter('nl2br', [
   }
 ]);
 
-angular.module('pickapp').config(function($stateProvider, $urlRouterProvider, $httpProvider, $authProvider, auth_base) {
+angular.module('pickapp').config(function($stateProvider, $urlRouterProvider, $httpProvider, $authProvider, auth_base, $ionicCloudProvider) {
+  var use_proxy;
+  $ionicCloudProvider.init({
+    "core": {
+      "app_id": "aaa54618"
+    },
+    "push": {
+      "sender_id": "1084310756977",
+      "pluginConfig": {
+        "ios": {
+          "badge": true,
+          "sound": true
+        },
+        "android": {
+          "iconColor": "#8DC549"
+        }
+      }
+    }
+  });
+  $httpProvider.interceptors.push('authInterceptor');
   $httpProvider.interceptors.push(function($rootScope) {
     return {
       request: function(config) {
@@ -276,10 +314,15 @@ angular.module('pickapp').config(function($stateProvider, $urlRouterProvider, $h
       }
     };
   });
+  if (window.location.protocol === 'http:') {
+    use_proxy = true;
+  } else {
+    use_proxy = false;
+  }
   $authProvider.configure({
     storage: 'localStorage',
     apiUrl: auth_base,
-    forceValidateToken: false,
+    forceValidateToken: true,
     omniauthWindowType: 'inAppBrowser',
     authProviderPaths: {
       facebook: '/auth/facebook'
@@ -288,7 +331,11 @@ angular.module('pickapp').config(function($stateProvider, $urlRouterProvider, $h
   $stateProvider.state('app', {
     url: '/app',
     abstract: true,
-    templateUrl: 'templates/menu.html'
+    views: {
+      'appContent': {
+        templateUrl: 'templates/menu.html'
+      }
+    }
   });
   $stateProvider.state('app.home', {
     url: '/home',
@@ -305,6 +352,20 @@ angular.module('pickapp').config(function($stateProvider, $urlRouterProvider, $h
       'menu_content': {
         templateUrl: 'templates/profile.html',
         controller: 'ProfileController',
+        resolve: {
+          auth: function($auth) {
+            return $auth.validateUser();
+          }
+        }
+      }
+    }
+  });
+  $stateProvider.state('app.user_travels', {
+    url: '/user_travels/:travels',
+    views: {
+      'menu_content': {
+        templateUrl: 'templates/profile_travels.html',
+        controller: 'UserTravelsController',
         resolve: {
           auth: function($auth) {
             return $auth.validateUser();
@@ -333,21 +394,6 @@ angular.module('pickapp').config(function($stateProvider, $urlRouterProvider, $h
       'menu_content': {
         templateUrl: 'templates/profile_driver.html',
         controller: 'ProfileDriverController',
-        resolve: {
-          auth: function($auth) {
-            return $auth.validateUser();
-          }
-        }
-      }
-    }
-  });
-  $stateProvider.state('app.profile_travels', {
-    url: '/profile_travels/:travels',
-    cache: false,
-    views: {
-      'menu_content': {
-        templateUrl: 'templates/profile_travels.html',
-        controller: 'ProfileTravelsController',
         resolve: {
           auth: function($auth) {
             return $auth.validateUser();
@@ -702,13 +748,12 @@ angular.module('pickapp').controller('NotificationsController', function($scope,
   };
 });
 
-angular.module('pickapp').controller('ProfileController', function($scope, $state, $rootScope, $interval, $ionicLoading, $ionicActionSheet, $ionicPlatform, $ionicModal, $ionicPopup, $auth, User) {
+angular.module('pickapp').controller('ProfileController', function($scope, $state, $rootScope, $interval, $ionicLoading, $ionicActionSheet, $ionicPlatform, $ionicHistory, $ionicModal, $ionicPopup, $auth, User) {
   var getData, uploadProfileImage;
   $scope.pullUpdate = function() {
     getData();
     return $scope.$broadcast('scroll.refreshComplete');
   };
-  $scope.ProfileImage = {};
   $ionicPlatform.ready(function() {
     return $scope.selectPhoto = function() {
       var camera_options, hideSheet;
@@ -778,7 +823,7 @@ angular.module('pickapp').controller('ProfileController', function($scope, $stat
     });
   };
   getData();
-  $ionicModal.fromTemplateUrl('edit-profile-modal.html', {
+  $ionicModal.fromTemplateUrl('templates/modals/edit-profile-modal.html', {
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
@@ -940,7 +985,7 @@ angular.module('pickapp').controller('ProfileTravelController', function($scope,
   };
 });
 
-angular.module('pickapp').controller('ProfileTravelsController', function($scope, $rootScope, $stateParams, User) {
+angular.module('pickapp').controller('UserTravelsController', function($scope, $rootScope, $stateParams, User) {
   $scope.display_completed_travels = false;
   $scope.shouldDisplayTravel = function(travel_dep_datetime) {
     return new Date(travel_dep_datetime) >= new Date();
@@ -948,27 +993,23 @@ angular.module('pickapp').controller('ProfileTravelsController', function($scope
   $scope.toggleCompletedTravels = function() {
     return $scope.display_completed_travels = !$scope.display_completed_travels;
   };
-  if ($stateParams.travels === 'driver') {
+  if ($stateParams.travels === 1) {
     User.getTravelsAsDriver($rootScope.user.id).then(function(resp) {
-      console.log(resp.data);
       return $scope.travels = resp.data;
     });
   }
   if ($stateParams.travels === 'passenger') {
     User.getTravelsAsPassenger($rootScope.user.id).then(function(resp) {
-      console.log(resp.data);
       return $scope.travels = resp.data;
     });
   }
   if ($stateParams.travels === 'applied') {
     User.getTravelsAsApplied($rootScope.user.id).then(function(resp) {
-      console.log(resp.data);
       return $scope.travels = resp.data;
     });
   }
   if ($stateParams.travels === 'approved') {
     return User.getTravelsAsApproved($rootScope.user.id).then(function(resp) {
-      console.log(resp.data);
       return $scope.travels = resp.data;
     });
   }
@@ -2022,6 +2063,21 @@ angular.module('pickapp').controller('WelcomeController', function($scope, $root
   });
 });
 
+angular.module('pickapp').factory('authInterceptor', function($injector) {
+  var authInterceptor;
+  authInterceptor = {
+    request: function(config) {
+      $injector.invoke(function($http, $auth) {
+        if (window.location.protocol === 'http:') {
+          return $http.defaults.headers.common = $auth.retrieveData('auth_headers');
+        }
+      });
+      return config;
+    }
+  };
+  return authInterceptor;
+});
+
 angular.module('pickapp').directive('confirmEmail', function($interpolate, $parse, User) {
   return {
     require: 'ngModel',
@@ -2060,18 +2116,45 @@ angular.module('pickapp').directive('confirmPwd', function($interpolate, $parse)
   };
 });
 
-angular.module('pickapp').factory('authInterceptor', function($injector) {
-  var authInterceptor;
-  authInterceptor = {
-    request: function(config) {
-      $injector.invoke(function($http, $auth) {
-        return console.log($auth.retrieveData('auth_headers'));
-      });
-      return config;
+(function(ionic) {
+  angular.module('ionic.contrib.ui.hscrollcards', ['ionic']).directive('hscroller', [
+    '$timeout', function($timeout) {
+      return {
+        restrict: 'E',
+        template: '<div class="hscroller" ng-transclude></div>',
+        replace: true,
+        transclude: true,
+        compile: function(element, attr) {
+          return function($scope, $element, $attr) {
+            var el;
+            el = $element[0];
+            return angular.element($element).bind('scroll', function() {
+              var left;
+              return left = $element[0].scrollLeft;
+            });
+          };
+        }
+      };
     }
-  };
-  return authInterceptor;
-});
+  ]).directive('hcard', [
+    '$rootScope', function($rootScope) {
+      return {
+        restrict: 'E',
+        template: '<div class="hscroller-card" ng-transclude></div>',
+        replace: true,
+        transclude: true,
+        scope: {
+          desc: '@'
+        },
+        link: function(scope, element, attrs) {
+          var name;
+          name = angular.element("<span>" + attrs.desc + "</span>");
+          return element.append(name);
+        }
+      };
+    }
+  ]);
+})(window.ionic);
 
 angular.module('pickapp').service('Car', function($q, $http, $rootScope, api_base) {
   var urlBase;

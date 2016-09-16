@@ -1,10 +1,11 @@
 angular.module 'pickapp', [
   'ionic',
-  'ionic.service.core'
+  'ionic.cloud'
   'ng-token-auth'
   'ngCordova'
   'uiGmapgoogle-maps'
   'ngMessages'
+  'ionic.contrib.ui.hscrollcards'
 ]
 
 if window.location.protocol == 'http:'
@@ -20,7 +21,7 @@ else
 
 auth = {}
 
-angular.module('pickapp').run ($rootScope, $ionicPlatform, $ionicModal, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicLoading, $state, $timeout, $auth, $ionicHistory, $ionicPopup, $http, $filter, Notification, User, Profile ) ->
+angular.module('pickapp').run ($rootScope, $ionicPlatform, $ionicModal, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicLoading, $state, $timeout, $auth, $ionicHistory, $ionicPush, $ionicUser, $ionicAuth, $ionicPopup, $http, $filter, Notification, User, Profile ) ->
   
   $ionicPlatform.ready ->
     if window.cordova and window.cordova.plugins.Keyboard
@@ -30,13 +31,23 @@ angular.module('pickapp').run ($rootScope, $ionicPlatform, $ionicModal, $ionicNa
     if window.cordova and window.cordova.InAppBrowser
       window.open = window.cordova.InAppBrowser.open
 
+    $rootScope.$on '$ionicView.afterEnter', (e) ->
+      state = $ionicHistory.currentView().stateName
+      console.log state
+      if state == 'app.profile'
+        $ionicNavBarDelegate.showBackButton(false)
+      # angular.forEach history.views, (view, index) ->
+      #   console.log 'views: ' + view.stateName
+      # angular.forEach history.histories[$ionicHistory.currentHistoryId()].stack, (view, index) ->
+      #   console.log 'history stack:' + view.stateName
+
     # Porco dio push
 
-    push = new Ionic.Push({
-      'debug': true
-      'onNotification': (notification) ->
-        getNotifications()
-    })
+    # push = new Ionic.Push({
+    #   'debug': true
+    #   'onNotification': (notification) ->
+    #     getNotifications()
+    # })
 
     # min birth_date
 
@@ -94,6 +105,12 @@ angular.module('pickapp').run ($rootScope, $ionicPlatform, $ionicModal, $ionicNa
     # StateChanges
 
     $rootScope.$on '$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) ->
+      # console.log "======================== START"
+      # console.log $ionicHistory.currentStateName()
+      # console.log $ionicHistory.viewHistory()
+      # console.log $ionicHistory.enabledBack()
+      # console.log $ionicHistory.currentView()
+      # console.log "======================== END"
 
     # ngTokenAuth events for auth methods
 
@@ -148,36 +165,70 @@ angular.module('pickapp').run ($rootScope, $ionicPlatform, $ionicModal, $ionicNa
     pushUnregister = ->
       User.clearDeviceTokens($rootScope.user.id).then (resp) ->
         # push.unregister()
-        Ionic.Auth.logout()
+        $ionicAuth.logout();
         $auth.signOut()
         $ionicSideMenuDelegate.toggleLeft()
       , (error) ->
-        Ionic.Auth.logout()
+        $ionicAuth.logout();
         $auth.signOut()
         $ionicSideMenuDelegate.toggleLeft()
 
 
     pushRegister = ->
+      console.log "PUSH REG"
       ionic_user = { email: 'pick_user_' + $rootScope.user.id + '@pickapp.it', password: md5($rootScope.user.id) }
 
-      if !Ionic.User.current().isAuthenticated()
-        Ionic.Auth.login('basic', { 'remember': true }, ionic_user).then( ()->
+      if !$ionicAuth.isAuthenticated()
+        $ionicAuth.login('basic', ionic_user).then( ()->
           finallyRegisterPush()
+          # Ionic.Auth.login('basic', { 'remember': true }, ionic_user).then( ()->
+          #   finallyRegisterPush()
         , (err)->
-          Ionic.Auth.signup(ionic_user).then(()->
-            Ionic.Auth.login('basic', { 'remember': true }, ionic_user).then ()->
+          $ionicAuth.signup(ionic_user).then( () ->
+            # `$ionicUser` is now registered
+            $ionicAuth.login('basic', ionic_user).then ()->
               finallyRegisterPush()
-          );
+          , (err) ->
+            console.log err
+          )
+
+          # Ionic.Auth.signup(ionic_user).then(()->
+          #   Ionic.Auth.login('basic', { 'remember': true }, ionic_user).then ()->
+          #     finallyRegisterPush()
+          # );
         );
 
+    $rootScope.$on 'cloud:push:notification', (event, data) ->
+      msg = data.message
+      console.log "#{msg.title}: #{msg.text}"
+
     finallyRegisterPush =->
-      push.register (data) ->
-        # Log out your device token (Save this!)
-        console.log("Got Token:", data.token)
-        push.saveToken(data.token)
-        Ionic.User.current().save()
-        User.updateDeviceTokens(data.token, $rootScope.user.id).then (resp) ->
+      console.log "FINALLY REG PUSH"
+      $ionicPush.register().then((t) ->
+        $ionicPush.saveToken t
+      ).then (t) ->
+        console.log 'Token saved:', t.token
+        $ionicPush.saveToken(t)
+        $ionicUser.save()
+        User.updateDeviceTokens(t.token, $rootScope.user.id).then (resp) ->
           console.log resp
+
+      # $ionicPush.register().then( (t) ->
+      #   console.log "DIOMERDA"
+      #   $ionicPush.saveToken(t)
+      #   console.log('Token saved:', t.token)
+      #   $ionicUser.save()
+      #   User.updateDeviceTokens(t.token, $rootScope.user.id).then (resp) ->
+      #     console.log resp
+      # )
+
+      # push.register (data) ->
+      #   # Log out your device token (Save this!)
+      #   console.log("Got Token:", data.token)
+      #   push.saveToken(data.token)
+      #   Ionic.User.current().save()
+      #   User.updateDeviceTokens(data.token, $rootScope.user.id).then (resp) ->
+      #     console.log resp
 
     user_has_photo = ->
       if (!$rootScope.user.profile_image_url)
@@ -251,11 +302,11 @@ angular.module('pickapp').run ($rootScope, $ionicPlatform, $ionicModal, $ionicNa
         pushUnregister()
 
       if !$rootScope.user.id
-        # if window.location.protocol == 'http:'
-        #   $timeout( () ->
-        #     loginForm = {email:'a.macchieraldo@koodit.it', password: 'password'}
-        #     $auth.submitLogin(loginForm)
-        #   , 3000)
+        if window.location.protocol == 'http:'
+          $timeout( () ->
+            loginForm = {email:'a.macchieraldo@koodit.it', password: 'password'}
+            $auth.submitLogin(loginForm)
+          , 3000)
         $rootScope.showAuthModal()
 
     $rootScope.showAuthModal = ->
