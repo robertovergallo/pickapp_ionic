@@ -40,15 +40,15 @@ angular.module('pickapp').service('Auth', ($rootScope, $log, $ionicModal, $ionic
     )
 
   getUserDetails = ->
-    # User.getPreferredRooms($rootScope.user.id).then( (resp) ->
-    #   $rootScope.user.preferred_rooms = resp.data
-    # )
-    # User.getTravelsCount($rootScope.user.id).then( (resp) ->
-    #   $rootScope.user.travels_count = resp.data
-    # )
-    # User.getReviewsCount($rootScope.user.id).then( (resp) ->
-    #   $rootScope.user.reviews_count = resp.data
-    # )
+    User.getPreferredRooms($rootScope.user.id).then( (resp) ->
+      $rootScope.user.preferred_rooms = resp.data
+    )
+    User.getTravelsCount($rootScope.user.id).then( (resp) ->
+      $rootScope.user.travels_count = resp.data
+    )
+    User.getReviewsCount($rootScope.user.id).then( (resp) ->
+      $rootScope.user.reviews_count = resp.data
+    )
 
   finallyRegisterPush =->
     console.log "FINALLY REG PUSH"

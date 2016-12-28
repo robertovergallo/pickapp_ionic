@@ -111,7 +111,7 @@ angular.module('pickapp').controller 'WelcomeController', ($scope, $rootScope, $
 	$ionicPlatform.ready ->
 		$scope.selectPhoto = ->
 
-			camera_options = 
+			camera_options =
 				quality: 50
 				destinationType: 0
 				sourceType: 1
@@ -149,5 +149,19 @@ angular.module('pickapp').controller 'WelcomeController', ($scope, $rootScope, $
 					true
 			)
 
-			
 
+	##### FACEBOOK Login
+
+	$ionicPlatform.ready ->
+		$scope.facebook_auth = ->
+      success = (data) ->
+        if data.status == 'connected'
+          facebookConnectPlugin.api("/me?fields=id,email,last_name,first_name", ['email', 'public_profile'], (data)->
+            $auth.submitFacebookLogin({user: data})
+          , (error) ->
+            console.log error
+          )
+
+      fail = (data) ->
+        console.log data
+      facebookConnectPlugin.login(['public_profile', 'email'], success, fail)

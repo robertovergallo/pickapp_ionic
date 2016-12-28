@@ -133,7 +133,6 @@ angular.module('pickapp').config(function($stateProvider, $urlRouterProvider, $h
   $httpProvider.interceptors.push(function($rootScope) {
     return {
       request: function(config) {
-        console.log(config);
         if (!(config.url.indexOf('public_messages') !== -1) && !(config.url.indexOf('travel_requests') !== -1) && !(config.url.indexOf('private_messages') !== -1) && !(config.url.indexOf('check_for_available_email') !== -1)) {
           $rootScope.$broadcast('loading:show');
         }
@@ -1859,7 +1858,7 @@ angular.module('pickapp').controller('WelcomeController', function($scope, $root
       return $rootScope.showAlert('Errore', 'Devi compilare tutti i campi per completare la registrazione!');
     }
   });
-  return $ionicPlatform.ready(function() {
+  $ionicPlatform.ready(function() {
     return $scope.selectPhoto = function() {
       var camera_options, hideSheet;
       camera_options = {
@@ -1898,6 +1897,26 @@ angular.module('pickapp').controller('WelcomeController', function($scope, $root
           return true;
         }
       });
+    };
+  });
+  return $ionicPlatform.ready(function() {
+    return $scope.facebook_auth = function() {
+      var fail, success;
+      success = function(data) {
+        if (data.status === 'connected') {
+          return facebookConnectPlugin.api("/me?fields=id,email,last_name,first_name", ['email', 'public_profile'], function(data) {
+            return $auth.submitFacebookLogin({
+              user: data
+            });
+          }, function(error) {
+            return console.log(error);
+          });
+        }
+      };
+      fail = function(data) {
+        return console.log(data);
+      };
+      return facebookConnectPlugin.login(['public_profile', 'email'], success, fail);
     };
   });
 });
@@ -2930,7 +2949,17 @@ angular.module('pickapp').service('Auth', function($rootScope, $log, $ionicModal
       return $rootScope.total_notifications = $rootScope.notification_count + $rootScope.messages_count;
     });
   };
-  getUserDetails = function() {};
+  getUserDetails = function() {
+    User.getPreferredRooms($rootScope.user.id).then(function(resp) {
+      return $rootScope.user.preferred_rooms = resp.data;
+    });
+    User.getTravelsCount($rootScope.user.id).then(function(resp) {
+      return $rootScope.user.travels_count = resp.data;
+    });
+    return User.getReviewsCount($rootScope.user.id).then(function(resp) {
+      return $rootScope.user.reviews_count = resp.data;
+    });
+  };
   finallyRegisterPush = function() {
     console.log("FINALLY REG PUSH");
     $ionicPush.register().then(function(t) {

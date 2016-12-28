@@ -5,10 +5,10 @@ ion-modal-view(ng-controller="WelcomeController")
 			.logo
 				img(src="img/logo.png")
 			.auth_menu
-				button.button.facebook(ng-click="authenticate('facebook', {params: {resource_class: 'User'}})") Accedi con Facebook
+				button.button.facebook(ng-click="facebook_auth()") Accedi con Facebook
 				button.button.login(ng-click="showLoginModal()") Login
 				button.button.register(ng-click="showRegisterModal()") Registrati
-			
+
 			.explore_button(ng-click="showIntroModal()") ESPLORA
 
 script(id='login-modal.html', type='text/ng-template')
@@ -123,7 +123,7 @@ script(id='register-modal.html', type='text/ng-template')
 					.button.button-block.button-assertive(ng-click="closeRegisterModal()") Annulla
 				.col
 					.button.button-block(ng-click="submitRegistration(registerForm)" ng-disabled="regFormElmt.$invalid" ng-class="{'button-assertive': regFormElmt.$invalid, 'button-balanced': regFormElmt.$valid}") Registrati
-			
+
 			.row
 				.col
 					.list.list-inset
@@ -148,7 +148,7 @@ script(id='intro-modal.html', type='text/ng-template')
 					.box
 						img#vroom(src="http://koodit.s3.amazonaws.com/pickapp/shared/app/pickcar.jpg")
 						.text
-							| il risparmio intelligente... 
+							| il risparmio intelligente...
 							br
 							| e divertente!
 				ion-slide
@@ -157,7 +157,7 @@ script(id='intro-modal.html', type='text/ng-template')
 						.text
 							| scegli la tua vroom...
 							br
-							| e parti! 
+							| e parti!
 
 script(id='info-modal.html', type='text/ng-template')
 	ion-modal-view.info_modal

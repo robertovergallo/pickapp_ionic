@@ -34,7 +34,6 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
   $httpProvider.interceptors.push ($rootScope) ->
     {
       request: (config) ->
-        console.log config
         # console.log config
         if !(config.url.indexOf('public_messages') != -1) && !(config.url.indexOf('travel_requests') != -1) && !(config.url.indexOf('private_messages') != -1) && !(config.url.indexOf('check_for_available_email') != -1)
           $rootScope.$broadcast 'loading:show'

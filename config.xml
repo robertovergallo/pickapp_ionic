@@ -94,4 +94,8 @@
         <variable name="SENDER_ID" value="1084310756977" />
     </plugin>
     <plugin name="cordova-plugin-wkwebview-engine" spec="https://github.com/driftyco/cordova-plugin-wkwebview-engine" />
+    <plugin name="cordova-plugin-facebook4" spec="~1.7.4">
+        <variable name="APP_ID" value="447004788814201" />
+        <variable name="APP_NAME" value="PickApp" />
+    </plugin>
 </widget>
