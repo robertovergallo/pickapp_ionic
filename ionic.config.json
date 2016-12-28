@@ -16,6 +16,10 @@
     {
       "path": "/auth_base",
       "proxyUrl": "http://www.pick-app.it"
+    },
+    {
+      "path": "/api_base_me",
+      "proxyUrl": "http://mbpro.local:3000/api"
     }
   ],
   "browsers": [

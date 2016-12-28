@@ -7583,8 +7583,8 @@ ion-slides {
  * --------------------------------------------------
  */
 .spinner {
-  stroke: #444;
-  fill: #444; }
+  stroke: #8DC549;
+  fill: #8DC549; }
   .spinner svg {
     width: 28px;
     height: 28px; }
@@ -7628,7 +7628,7 @@ ion-slides {
   stop-opacity: 0; }
 
 .spinner-spiral.spinner-light .stop1 {
-  stop-color: #444; }
+  stop-color: #8DC549; }
 
 .spinner-spiral.spinner-light .stop2 {
   stop-color: #fff; }
@@ -9955,6 +9955,13 @@ a.button {
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
 
+.boh_fixa_sta_merda {
+  background: white !important;
+  background-color: white !important;
+  border-top: 1px solid #ddd !important; }
+  .boh_fixa_sta_merda a.tab-item {
+    color: #888 !important; }
+
 ion-nav-bar .bubblebadge {
   position: absolute;
   top: 0px;
@@ -10086,35 +10093,42 @@ ion-nav-bar .bubblebadge {
     background: rgba(255, 255, 255, 0.15);
     color: #fff;
     font-weight: 700; }
-  .bar-green.footer .submenu {
-    position: absolute;
-    z-index: 9;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.95);
-    border: none;
-    visibility: hidden;
-    opacity: 0;
-    -webkit-transition: all 0.3s ease-in-out;
-    transition: all 0.3s ease-in-out;
-    -webkit-transform: scale(0.3) translate3D(0px, 0px, 0px);
-    transform: scale(0.3) translate3D(0px, 0px, 0px); }
-    .bar-green.footer .submenu.open {
-      opacity: 1;
-      visibility: visible;
-      -webkit-transform: scale(1) translate3D(0px, -48px, 0px);
-      transform: scale(1) translate3D(0px, -48px, 0px); }
-    .bar-green.footer .submenu .preferred_rooms .room {
-      display: inline-block;
-      background: rgba(41, 171, 223, 0.75);
-      margin: 5px;
-      padding: 0px 10px;
-      height: 40px;
-      line-height: 40px;
-      border-radius: 2px;
-      font-weight: 500; }
+
+.favorites_toggle.active {
+  opacity: 1; }
+
+.submenu {
+  position: absolute;
+  z-index: 9;
+  top: -51px;
+  left: 0px;
+  width: 100%;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  -webkit-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transform-origin: 0% 100%;
+  transform-origin: 0% 100%; }
+  .submenu.open {
+    opacity: 1;
+    visibility: visible;
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1); }
+  .submenu .preferred_rooms .room {
+    display: inline-block;
+    background: rgba(41, 171, 223, 0.75);
+    color: white;
+    margin: 5px;
+    padding: 0px 10px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 2px;
+    font-weight: 500; }
 
 .section_title {
   position: relative;
@@ -11341,6 +11355,137 @@ div.hscroller-card {
       margin: 0px;
       text-decoration: none;
       text-align: center; }
+
+.travel_card {
+  width: 100%;
+  padding: 5px;
+  background: white;
+  border: 1px solid #ddd;
+  -webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  border-radius: 3px; }
+  .travel_card .tc_header {
+    height: 60px;
+    padding: 0px 5px;
+    display: -webkit-box;
+    display: -moz-box;
+    display: box;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 5px; }
+    .travel_card .tc_header .tc_user_image {
+      margin: auto 10px auto 0px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center; }
+    .travel_card .tc_header .tc_h_data {
+      margin: auto auto auto 0px; }
+      .travel_card .tc_header .tc_h_data h2 {
+        padding: 0px;
+        margin: 0px;
+        margin-bottom: 5px;
+        font-size: 14px;
+        line-height: 14px; }
+      .travel_card .tc_header .tc_h_data p {
+        margin: 0px;
+        padding: 0px;
+        font-size: 12px;
+        line-height: 12px;
+        color: #666; }
+  .travel_card .tc_body {
+    padding: 10px 5px; }
+    .travel_card .tc_body .tc_b_data {
+      display: -webkit-box;
+      display: -moz-box;
+      display: box;
+      display: -webkit-flex;
+      display: -moz-flex;
+      display: -ms-flexbox;
+      display: flex;
+      height: 35px;
+      padding: 5px 0px;
+      border-bottom: 1px solid #eee; }
+      .travel_card .tc_body .tc_b_data .icon {
+        width: 30px;
+        height: 35px;
+        font-size: 25px;
+        line-height: 30px;
+        text-align: center;
+        margin-right: 5px; }
+      .travel_card .tc_body .tc_b_data p {
+        margin: auto auto auto 0px;
+        font-size: 12px; }
+  .travel_card .tc_footer {
+    padding: 10px 5px; }
+    .travel_card .tc_footer .tc_f_data {
+      display: -webkit-box;
+      display: -moz-box;
+      display: box;
+      display: -webkit-flex;
+      display: -moz-flex;
+      display: -ms-flexbox;
+      display: flex;
+      height: 30px;
+      border-radius: 5px; }
+      .travel_card .tc_footer .tc_f_data.assertive {
+        background: #DB4F59; }
+      .travel_card .tc_footer .tc_f_data.balanced {
+        background: #8DC549; }
+      .travel_card .tc_footer .tc_f_data.calm {
+        background: #29ABDF; }
+      .travel_card .tc_footer .tc_f_data .icon {
+        width: 30px;
+        height: 35px;
+        font-size: 22px;
+        line-height: 30px;
+        text-align: center;
+        margin: auto 0px auto auto;
+        margin-right: 0px;
+        color: white; }
+      .travel_card .tc_footer .tc_f_data p {
+        margin: auto auto auto 0px;
+        font-size: 10px;
+        font-weight: bold;
+        color: white; }
+  .travel_card .tc_actions {
+    padding: 0px 5px;
+    margin-bottom: 5px; }
+    .travel_card .tc_actions .tc_a_data {
+      display: -webkit-box;
+      display: -moz-box;
+      display: box;
+      display: -webkit-flex;
+      display: -moz-flex;
+      display: -ms-flexbox;
+      display: flex;
+      height: 45px;
+      border-radius: 5px;
+      background: #eee; }
+      .travel_card .tc_actions .tc_a_data:active {
+        background: #e6e6e6; }
+      .travel_card .tc_actions .tc_a_data .icon {
+        width: 35px;
+        height: 45px;
+        font-size: 22px;
+        line-height: 46px;
+        text-align: center;
+        margin: auto 0px auto auto;
+        margin-right: 0px;
+        color: #444; }
+      .travel_card .tc_actions .tc_a_data p {
+        padding: 0px;
+        color: #444;
+        margin: auto auto auto 0px;
+        font-size: 14px;
+        line-height: 14px;
+        font-weight: bold; }
 
 .profile_driver .image_data {
   max-width: 80%;

@@ -7,8 +7,8 @@ ion-view.notifications
 	ion-content
 		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
 		.button-bar
-			.button.button-clear(ng-class="{'button-positive': active_section == 0}" ng-click="setActiveSection(0)") Notifiche
-			.button.button-clear(ng-class="{'button-positive': active_section == 1}" ng-click="setActiveSection(1)") Messaggi
+			.button.button-clear(ng-class="{'button-positive': active_section == 0, 'button-dark': active_section != 0}" ng-click="setActiveSection(0)") Notifiche
+			.button.button-clear(ng-class="{'button-positive': active_section == 1, 'button-dark': active_section != 1}" ng-click="setActiveSection(1)") Messaggi
 
 		ion-slide-box(show-pager="false" active-slide="active_section")
 			ion-slide
@@ -16,7 +16,7 @@ ion-view.notifications
 					.item.item-divider {{notification.title}}
 					.item.item-text-wrap
 						p(ng-bind-html="notification.body")
-					.item.tabs.tabs-secondary.tabs-icon-left
+					.item.tabs.tabs-secondary.tabs-icon-left.tabs-background-light.boh_fixa_sta_merda
 						a.tab-item(ng-click="setNotificationAsClicked(notification.id)" ng-if="!notification.clicked")
 							i.icon.ion-checkmark-circled
 							| Segna come letta
@@ -32,7 +32,7 @@ ion-view.notifications
 					.item.item-divider {{message.title}}
 					.item.item-text-wrap
 						p(ng-bind-html="message.body")
-					.item.tabs.tabs-secondary.tabs-icon-left
+					.item.tabs.tabs-secondary.tabs-icon-left.boh_fixa_sta_merda
 						a.tab-item(ng-click="setNotificationAsClicked(message.id)" ng-if="!message.clicked")
 							i.icon.ion-checkmark-circled
 							| Segna come letta

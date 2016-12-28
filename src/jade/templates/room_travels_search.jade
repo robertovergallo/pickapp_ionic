@@ -1,6 +1,6 @@
 ion-view.rooms
   ion-nav-title Cerca viaggi
-  ion-content.room_travels_search
+  ion-content.room_travels_search(padding="true")
     .col
       .row
         button.button.button-calm.button-block(ng-click="togglePanel()") Imposta ricerca
@@ -36,35 +36,70 @@ ion-view.rooms
 
     p.text-center Risultati della ricerca:
 
-    .list.card(ng-repeat="offer in found_travels | orderBy:'one_way_datetime'")
-      .item.item-avatar
-        img(src="{{offer.user.profile_image_url}}")
-        h2(ng-if="!offer.user.surname") {{offer.user.name}}
-        h2(ng-if="offer.user.surname") {{offer.user.name}} {{offer.user.surname}} 
-        p {{offer.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+    .travel_card(ng-repeat="offer in found_travels | orderBy:'one_way_datetime'")
+      .tc_header
+        .tc_user_image(style="background-image: url({{offer.user.profile_image_url}})")
+        .tc_h_data
+          h2 {{offer.user.name}} {{offer.user.surname}} 
+          p {{offer.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+      .tc_body(ng-if="offer.towards_room")
+        .tc_b_data
+          i.icon.ion-ios-flag.balanced
+          p 
+            b Da: 
+            | {{offer.starting_address}}
+        .tc_b_data
+          i.icon.ion-ios-location.assertive
+          p
+            b A: 
+            | {{room.name}}
 
-      .item.item-icon-left(ng-if="offer.towards_room")
-        i.icon.ion-ios-flag-outline.balanced
-        b Da: 
-        | {{offer.starting_address}}
-      .item.item-icon-left(ng-if="!offer.towards_room")
-        i.icon.ion-ios-flag-outline.balanced
-        b Da: 
-        | {{room.name}}
-
-      .item.item-icon-left(ng-if="offer.towards_room")
-        i.icon.ion-ios-flag.assertive
-        b A: 
-        | {{room.name}}
-      .item.item-icon-left(ng-if="!offer.towards_room")
-        i.icon.ion-ios-flag.assertive
-        b A: 
-        | {{offer.destination_address}}
-
-      .item.tabs.tabs-secondary.tabs-icon-left
-        a.tab-item(ui-sref="app.room_offer({room_id: room.id, travel_id: offer.id})")
+      .tc_body(ng-if="!offer.towards_room")
+        .tc_b_data
+          i.icon.ion-ios-flag.balanced
+          p 
+            b Da: 
+            | {{room.name}}
+        .tc_b_data
+          i.icon.ion-ios-location.assertive
+          p
+            b A: 
+            | {{offer.destination_address}}
+      
+      .tc_actions
+        .tc_a_data(ui-sref="app.room_offer({room_id: room.id, travel_id: offer.id})")
           i.icon.ion-eye
-          | Dettagli
+          p Dettagli
+
+    //- .list.card(ng-repeat="offer in found_travels | orderBy:'one_way_datetime'")
+    //-   .item.item-avatar
+    //-     img(src="{{offer.user.profile_image_url}}")
+    //-     h2(ng-if="!offer.user.surname") {{offer.user.name}}
+    //-     h2(ng-if="offer.user.surname") {{offer.user.name}} {{offer.user.surname}} 
+    //-     p {{offer.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+
+    //-   .item.item-icon-left(ng-if="offer.towards_room")
+    //-     i.icon.ion-ios-flag-outline.balanced
+    //-     b Da: 
+    //-     | {{offer.starting_address}}
+    //-   .item.item-icon-left(ng-if="!offer.towards_room")
+    //-     i.icon.ion-ios-flag-outline.balanced
+    //-     b Da: 
+    //-     | {{room.name}}
+
+    //-   .item.item-icon-left(ng-if="offer.towards_room")
+    //-     i.icon.ion-ios-flag.assertive
+    //-     b A: 
+    //-     | {{room.name}}
+    //-   .item.item-icon-left(ng-if="!offer.towards_room")
+    //-     i.icon.ion-ios-flag.assertive
+    //-     b A: 
+    //-     | {{offer.destination_address}}
+
+    //-   .item.tabs.tabs-secondary.tabs-icon-left
+    //-     a.tab-item(ui-sref="app.room_offer({room_id: room.id, travel_id: offer.id})")
+    //-       i.icon.ion-eye
+    //-       | Dettagli
 
     .row(ng-if="found_travels.length == 0")
       .col

@@ -1,6 +1,6 @@
 {
   "name": "PickApp",
-  "version": "2.2.5",
+  "version": "2.3.5",
   "description": "PickApp",
   "dependencies": {
     "@ionic/cloud": "^0.9.0",

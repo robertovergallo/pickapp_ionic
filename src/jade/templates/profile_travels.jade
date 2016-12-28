@@ -4,36 +4,68 @@ ion-view
 		button.button.button-clear(ng-click="toggleCompletedTravels()")
 			span(ng-show="!display_completed_travels") Vedi Tutti
 			span(ng-show="display_completed_travels") Vedi Attivi
-	ion-content
-		.list.card(ng-repeat="travel in travels | orderBy:'departure_datetime' track by $index" ng-show="shouldDisplayTravel(travel.departure_datetime) || display_completed_travels")
-			.item.item-avatar
-				img(src="{{travel.user.profile_image_url}}")
-				h2(ng-if="!travel.user.surname") {{travel.user.name}}
-				h2(ng-if="travel.user.surname") {{travel.user.name}} {{travel.user.surname}} 
-				p {{travel.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
-			.item.item-icon-left
-				i.icon.ion-ios-flag.balanced
-				b Da: 
-				| {{travel.starting_address}}
-			.item.item-icon-left
-				i.icon.ion-ios-location.assertive
-				b A: 
-				| {{travel.room.name}}
-
-			.item.tabs.tabs-secondary.tabs-icon-left
-				a.tab-item.assertive(ng-if="!travel.completed && !travel.waiting_for_confirm")
+	ion-content(padding="true")
+		.travel_card(ng-repeat="travel in travels | orderBy:'departure_datetime' track by $index" ng-show="shouldDisplayTravel(travel.departure_datetime) || display_completed_travels")
+			.tc_header
+				.tc_user_image(style="background-image: url({{travel.user.profile_image_url}})")
+				.tc_h_data
+					h2 {{travel.user.name}} {{travel.user.surname}} 
+					p {{travel.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+			.tc_body
+				.tc_b_data
+					i.icon.ion-ios-flag.balanced
+					p 
+						b Da: 
+						| {{travel.starting_address}}
+				.tc_b_data
+					i.icon.ion-ios-location.assertive
+					p
+						b A: 
+						| {{travel.room.name}}
+			.tc_footer
+				.tc_f_data.assertive(ng-if="!travel.completed && !travel.waiting_for_confirm")
 					i.icon.ion-android-alert
-					| Non ancora Svolto
-				a.tab-item.balanced(ng-if="travel.completed")
+					p Non ancora Svolto
+				.tc_f_data.balanced(ng-if="travel.completed")
 					i.icon.ion-ios-checkmark
-					| Completato dal Guidatore
-				a.tab-item.positive(ng-if="travel.waiting_for_confirm")
+					p Completato dal Guidatore
+				.tc_f_data.calm(ng-if="travel.waiting_for_confirm")
 					i.icon.ion-ios-checkmark-outline
-					| In attesa di Conferma da parte del Guidatore
-			.item.tabs.tabs-secondary.tabs-icon-left
-				a.tab-item(ui-sref="app.profile_travel({travel_id: travel.id})")
+					p In attesa di Conferma da parte del Guidatore
+			.tc_actions
+				.tc_a_data(ui-sref="app.profile_travel({travel_id: travel.id})")
 					i.icon.ion-eye
-					| Dettagli
+					p Dettagli
+
+		//- .list.card(ng-repeat="travel in travels | orderBy:'departure_datetime' track by $index" ng-show="shouldDisplayTravel(travel.departure_datetime) || display_completed_travels")
+		//- 	.item.item-avatar
+		//- 		img(src="{{travel.user.profile_image_url}}")
+		//- 		h2(ng-if="!travel.user.surname") {{travel.user.name}}
+		//- 		h2(ng-if="travel.user.surname") {{travel.user.name}} {{travel.user.surname}} 
+		//- 		p {{travel.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+		//- 	.item.item-icon-left
+		//- 		i.icon.ion-ios-flag.balanced
+		//- 		b Da: 
+		//- 		| {{travel.starting_address}}
+		//- 	.item.item-icon-left
+		//- 		i.icon.ion-ios-location.assertive
+		//- 		b A: 
+		//- 		| {{travel.room.name}}
+
+		//- 	.item.tabs.tabs-secondary.tabs-icon-left
+		//- 		a.tab-item.assertive(ng-if="!travel.completed && !travel.waiting_for_confirm")
+		//- 			i.icon.ion-android-alert
+		//- 			| Non ancora Svolto
+		//- 		a.tab-item.balanced(ng-if="travel.completed")
+		//- 			i.icon.ion-ios-checkmark
+		//- 			| Completato dal Guidatore
+		//- 		a.tab-item.positive(ng-if="travel.waiting_for_confirm")
+		//- 			i.icon.ion-ios-checkmark-outline
+		//- 			| In attesa di Conferma da parte del Guidatore
+		//- 	.item.tabs.tabs-secondary.tabs-icon-left
+		//- 		a.tab-item(ui-sref="app.profile_travel({travel_id: travel.id})")
+		//- 			i.icon.ion-eye
+		//- 			| Dettagli
 				
 		
 		.row(ng-if="travels.length == 0")

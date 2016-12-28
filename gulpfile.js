@@ -21,9 +21,9 @@ function handleError(err) {
 // Sources Paths
 
 var paths = {
-  sass: ['./src/scss/**', './src/sass/**'],
-  coffee: ['./src/coffee/**/*.coffee'],
-  jade: ['./src/jade/**/*.jade']
+  sass: ['src/scss/**', 'src/sass/**'],
+  coffee: ['src/coffee/**/*.coffee'],
+  jade: ['src/jade/**/*.jade']
 };
 
 // Gulp Default Task
@@ -64,7 +64,7 @@ gulp.task('coffee', function(done) {
 
 gulp.task('jade', function(done) {
   var YOUR_LOCALS = {};
- 
+
   gulp.src(paths.jade)
     .pipe(jade({
       locals: YOUR_LOCALS

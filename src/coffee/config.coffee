@@ -1,4 +1,4 @@
-angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvider, $authProvider, auth_base, $ionicCloudProvider) ->
+angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvider, $authProvider, auth_base, $ionicCloudProvider, $ionicConfigProvider) ->
 
   # Ionic Cloud
 
@@ -19,12 +19,22 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
       }
     }
   })
-  
-  $httpProvider.interceptors.push 'authInterceptor'
+
+  $ionicConfigProvider.backButton.text(false);
+  $ionicConfigProvider.backButton.previousTitleText(false);
+  # UI Setup
+
+  $ionicConfigProvider.tabs.style('standard')
+  $ionicConfigProvider.tabs.position('bottom')
+  $ionicConfigProvider.backButton.icon('ion-arrow-left-c')
+  $ionicConfigProvider.spinner.icon('spiral')
+
+  # $httpProvider.interceptors.push 'authInterceptor'
 
   $httpProvider.interceptors.push ($rootScope) ->
     {
       request: (config) ->
+        console.log config
         # console.log config
         if !(config.url.indexOf('public_messages') != -1) && !(config.url.indexOf('travel_requests') != -1) && !(config.url.indexOf('private_messages') != -1) && !(config.url.indexOf('check_for_available_email') != -1)
           $rootScope.$broadcast 'loading:show'
@@ -38,19 +48,39 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   # auth
 
+  storage_type = null
+  omniauth_window_type = null
+
   if window.location.protocol == 'http:'
-    use_proxy = true
+    storage_type = 'cookies'
+    omniauth_window_type = 'sameWindow'
   else
-    use_proxy = false
+    storage_type = 'localStorage'
+    omniauth_window_type = 'inAppBrowser'
+
 
   $authProvider.configure
-    storage: 'localStorage'
     apiUrl: auth_base
-    forceValidateToken: true
-    omniauthWindowType: 'inAppBrowser'
+    storage: storage_type
+    omniauthWindowType: omniauth_window_type
     authProviderPaths:
       facebook: '/auth/facebook'
-    
+
+  # auth (old)
+
+  # if window.location.protocol == 'http:'
+  #   use_proxy = true
+  # else
+  #   use_proxy = false
+  #
+  # $authProvider.configure
+  #   storage: 'localStorage'
+  #   apiUrl: auth_base
+  #   forceValidateToken: true
+  #   omniauthWindowType: 'inAppBrowser'
+  #   authProviderPaths:
+  #     facebook: '/auth/facebook'
+
 
   # routes
 
@@ -62,31 +92,31 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   $stateProvider.state 'app.home',
     url: '/home'
-    views: 'menu_content':
+    views: 'home-tab':
       templateUrl: 'templates/home.html'
       controller: 'HomeController'
 
   $stateProvider.state 'app.profile',
     url: '/profile'
-    views: 'menu_content':
+    views: 'profile-tab':
       templateUrl: 'templates/profile.html'
       controller: 'ProfileController'
       resolve:
         auth: ($auth) ->
           $auth.validateUser()
 
-  $stateProvider.state 'app.user_travels',
-    url: '/user_travels/:travels'
-    views: 'menu_content':
+  $stateProvider.state 'app.profile_travels',
+    url: '/profile_travels/:travels'
+    views: 'profile-tab':
       templateUrl: 'templates/profile_travels.html'
-      controller: 'UserTravelsController'
+      controller: 'ProfileTravelsController'
       resolve:
         auth: ($auth) ->
           $auth.validateUser()
 
   $stateProvider.state 'app.notifications',
     url: '/notifications'
-    views: 'menu_content':
+    views: 'notifications-tab':
       templateUrl: 'templates/notifications.html'
       controller: 'NotificationsController'
       resolve:
@@ -95,7 +125,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   $stateProvider.state 'app.profile_driver',
     url: '/profile_driver'
-    views: 'menu_content':
+    views: 'profile-tab':
       templateUrl: 'templates/profile_driver.html'
       controller: 'ProfileDriverController'
       resolve:
@@ -104,7 +134,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   $stateProvider.state 'app.profile_travel',
     url: '/profile_travel/:travel_id'
-    views: 'menu_content':
+    views: 'profile-tab':
       templateUrl: 'templates/travel.html'
       controller: 'TravelController'
       resolve:
@@ -113,7 +143,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   $stateProvider.state 'app.cars',
     url: '/cars'
-    views: 'menu_content':
+    views: 'profile-tab':
       templateUrl: 'templates/cars.html'
       controller: 'CarsController'
       resolve:
@@ -122,7 +152,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   $stateProvider.state 'app.rooms',
     url: '/rooms'
-    views: 'menu_content':
+    views: 'rooms-tab':
       templateUrl: 'templates/rooms.html'
       controller: 'RoomsController'
       resolve:
@@ -131,7 +161,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   $stateProvider.state 'app.room_travels_search',
     url: '/room/:room_id/travels_search'
-    views: 'menu_content':
+    views: 'rooms-tab':
       templateUrl: 'templates/room_travels_search.html'
       controller: 'RoomTravelsSearchController'
       resolve:
@@ -139,8 +169,8 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
           $auth.validateUser()
 
   $stateProvider.state 'app.rooms_search',
-    url: '/rooms/search/:search_term?'
-    views: 'menu_content':
+    url: '/search/:search_term?'
+    views: 'home-tab':
       templateUrl: 'templates/rooms_search.html'
       controller: 'RoomsSearchController'
       resolve:
@@ -149,7 +179,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   $stateProvider.state 'app.rooms_category',
     url: '/rooms/:room_category_id'
-    views: 'menu_content':
+    views: 'rooms-tab':
       templateUrl: 'templates/rooms_category.html'
       controller: 'RoomsCategoryController'
       resolve:
@@ -158,7 +188,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   $stateProvider.state 'app.room',
     url: '/room/:room_id'
-    views: 'menu_content':
+    views: 'rooms-tab':
       templateUrl: 'templates/room.html'
       controller: 'RoomController'
       resolve:
@@ -168,7 +198,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
   $stateProvider.state 'app.room_requests',
     url: '/room_requests/:room_id'
     cache: false
-    views: 'menu_content':
+    views: 'rooms-tab':
       templateUrl: 'templates/room_requests.html'
       controller: 'RoomRequestsController'
       resolve:
@@ -178,7 +208,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
   $stateProvider.state 'app.room_offers',
     url: '/room_offers/:room_id'
     cache: false
-    views: 'menu_content':
+    views: 'rooms-tab':
       templateUrl: 'templates/room_offers.html'
       controller: 'RoomOffersController'
       resolve:
@@ -187,7 +217,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   $stateProvider.state 'app.room_request',
     url: '/room_request/:travel_id'
-    views: 'menu_content':
+    views: 'rooms-tab':
       templateUrl: 'templates/room_request.html'
       controller: 'RoomRequestController'
       resolve:
@@ -196,7 +226,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
 
   $stateProvider.state 'app.room_offer',
     url: '/rooms/:room_id/room_offer/:travel_id/public_chat/:open_public_chat?/private_chat/:open_private_chat?'
-    views: 'menu_content':
+    views: 'rooms-tab':
       templateUrl: 'templates/travel.html'
       controller: 'TravelController'
       resolve:
@@ -204,4 +234,3 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
           $auth.validateUser()
 
   $urlRouterProvider.otherwise '/app/home'
-

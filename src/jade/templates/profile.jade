@@ -58,33 +58,38 @@ ion-view.profile.home(title="Profilo")
 				i.icon.ion-ios-arrow-right
 		
 		.button.button-block(ng-click="showEditProfileModal()") Modifica Profilo
+		.button.button-block.button-assertive(ng-click="signOut()") Logout
+
+		br
+		br
+		br
 		.button.button-block.button-assertive(ng-click="deleteAccount()") Elimina Profilo
 
-script(id='edit-profile-modal.html', type='text/ng-template')
-	ion-modal-view
-		ion-header-bar.bar-positive
-			h1.title.positive Modifica Profilo
-			.buttons
-				button.button.button-icon.ion-ios-close-outline(ng-click="closeEditProfileModal()")
-		ion-content
-			form.list.list-inset.register_form
-				.item(ng-click="newBirthDatePicker()")
-					| Data di Nascita
-					span.item-note(ng-show="!editForm.birth_date") Seleziona data
-					span.item-note(ng-show="editForm.birth_date") {{editForm.birth_date | date:"dd MMMM yyyy"}}
-				label.item.item-input
-					span.input-label Indirizzo
-					input(type='text' name="address" ng-model="editForm.address")
-				label.item.item-input
-					span.input-label Comune
-					input(type='text' name="comune" ng-model="editForm.comune")
-				label.item.item-input
-					span.input-label Comune
-					input(type='text' name="zip_code" ng-model="editForm.zip_code")
-				label.item.item-input.item-select
-					.input-label Provincia
-					select(ng-options="provincia.sigla as (provincia.nome + '(' + provincia.sigla + ')') for provincia in dati_italia.province | orderBy: 'nome'" name="prov" id="prov" ng-model="editForm.prov")
-						option(value="?" selected="true") La tua provincia
-			.row
-				.col
-					.button.button-block.button-positive(ng-click="updateProfile()") Salva Modifiche
+	script(id='edit-profile-modal.html', type='text/ng-template')
+		ion-modal-view
+			ion-header-bar.bar-positive
+				h1.title.positive Modifica Profilo
+				.buttons
+					button.button.button-icon.ion-ios-close-outline(ng-click="closeEditProfileModal()")
+			ion-content
+				form.list.list-inset.register_form
+					.item(ng-click="newBirthDatePicker()")
+						| Data di Nascita
+						span.item-note(ng-show="!editForm.birth_date") Seleziona data
+						span.item-note(ng-show="editForm.birth_date") {{editForm.birth_date | date:"dd MMMM yyyy"}}
+					label.item.item-input
+						span.input-label Indirizzo
+						input(type='text' name="address" ng-model="editForm.address")
+					label.item.item-input
+						span.input-label Comune
+						input(type='text' name="comune" ng-model="editForm.comune")
+					label.item.item-input
+						span.input-label Comune
+						input(type='text' name="zip_code" ng-model="editForm.zip_code")
+					label.item.item-input.item-select
+						.input-label Provincia
+						select(ng-options="provincia.sigla as (provincia.nome + '(' + provincia.sigla + ')') for provincia in dati_italia.province | orderBy: 'nome'" name="prov" id="prov" ng-model="editForm.prov")
+							option(value="?" selected="true") La tua provincia
+				.row
+					.col
+						.button.button-block.button-positive(ng-click="updateProfile()") Salva Modifiche

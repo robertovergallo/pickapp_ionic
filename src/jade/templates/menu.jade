@@ -1,46 +1,74 @@
-ion-side-menus(enable-menu-with-back-views="false")
-	ion-side-menu-content
-		ion-nav-bar.bar-green
-			ion-nav-back-button Indietro
-			ion-nav-buttons(side="left")
-				button.button.button-icon.button-clear.ion-navicon(menu-toggle="left") 
+ion-nav-bar.bar-green
+	ion-nav-back-button
 
-			ion-nav-title PickApp!
+	ion-nav-title PickApp!
 
-			ion-nav-buttons(side="right")
-				button.button.button-icon.button-clear.ion-ios-bell(ui-sref="app.notifications()")
-					.bubblebadge(ng-show="total_notifications") {{total_notifications}}
+	ion-nav-buttons(side="right")
+		button.button.button-icon.button-clear.ion-ios-bell(ui-sref="app.notifications()")
+			.bubblebadge(ng-show="total_notifications") {{total_notifications}}
 
-		ion-nav-view(animation="slide-left-right" name="menu_content")
-			//- view contents gets loaded here
+ion-tabs.tabs-background-balanced.tabs-color-light.tabs-icon-top
+	//- .tabs-item-hide
+	ion-tab(icon='ion-home' ui-sref='app.home' title="Home" on-deselect="clearHistory()")
+		ion-nav-view(name='home-tab')
+	ion-tab(icon='ion-person' ui-sref='app.profile' title="Profilo" on-deselect="clearHistory()")
+		ion-nav-view(name='profile-tab')
+	ion-tab(icon='ion-location', ui-sref='app.rooms' title="Vrooms" on-deselect="clearHistory()")
+		ion-nav-view(name='rooms-tab')
+	ion-tab(icon='ion-android-notifications', ui-sref='app.notifications' title="Notifiche" on-deselect="clearHistory()" badge="total_notifications" badge-style="badge-assertive")
+		ion-nav-view(name='notifications-tab')
+	a.tab-item.favorites_toggle(ng-init="fav_rooms_menu = false" ng-click="fav_rooms_menu = !fav_rooms_menu" ng-class="{'active': fav_rooms_menu == true}")
+		i.icon.ion-star
+		| Preferiti
+	
+	.submenu(ng-class="{'open': fav_rooms_menu == true}")
+		hscroller.preferred_rooms(zooming="false" direction="x" ng-click="fav_rooms_menu = !fav_rooms_menu")
+			hcard.room(ng-repeat="room in user.preferred_rooms track by $index" desc="{{room.name}}"  ui-sref="app.room({room_id: room.id})")
+
+
+//- ion-side-menus(enable-menu-with-back-views="false")
+//- 	ion-side-menu-content
+//- 		ion-nav-bar.bar-green
+//- 			ion-nav-back-button Indietro
+//- 			ion-nav-buttons(side="left")
+//- 				button.button.button-icon.button-clear.ion-navicon(menu-toggle="left") 
+
+//- 			ion-nav-title PickApp!
+
+//- 			ion-nav-buttons(side="right")
+//- 				button.button.button-icon.button-clear.ion-ios-bell(ui-sref="app.notifications()")
+//- 					.bubblebadge(ng-show="total_notifications") {{total_notifications}}
+
+//- 		ion-nav-view(animation="slide-left-right" name="menu_content")
+//- 			//- view contents gets loaded here
 		
-		ion-footer-bar.bar-green.footer(align-title="center")
-			button.button.button-clear(ng-init="fav_rooms_menu = false" ng-click="fav_rooms_menu = !fav_rooms_menu") Le tue Vroom
-			.submenu(ng-class="{'open': fav_rooms_menu == true}")
-				hscroller.preferred_rooms(zooming="false" direction="x" ng-click="fav_rooms_menu = !fav_rooms_menu")
-					hcard.room(ng-repeat="room in user.preferred_rooms track by $index" desc="{{room.name}}"  ui-sref="app.room({room_id: room.id})")
+//- 		ion-footer-bar.bar-green.footer(align-title="center")
+//- 			button.button.button-clear(ng-init="fav_rooms_menu = false" ng-click="fav_rooms_menu = !fav_rooms_menu") Le tue Vroom
+//- 			.submenu(ng-class="{'open': fav_rooms_menu == true}")
+//- 				hscroller.preferred_rooms(zooming="false" direction="x" ng-click="fav_rooms_menu = !fav_rooms_menu")
+//- 					hcard.room(ng-repeat="room in user.preferred_rooms track by $index" desc="{{room.name}}"  ui-sref="app.room({room_id: room.id})")
 
-	ion-side-menu(side="left" width="100")
-		ion-scroll(direction="y")
-			.sidemenu
-				.element(ui-sref="app.home()" menu-close)
-					.title Home
-					.icon.ion-home
-				.element(ui-sref="app.profile()" menu-close)
-					.title Profilo
-					.icon.ion-person
-				.element(ui-sref="app.notifications()" menu-close)
-					.title Notifiche
-					.bubblebadge(ng-show="total_notifications") {{total_notifications}}
-					.icon.ion-android-notifications
-				.element(ui-sref="app.cars()" ng-if="user.is_driver" menu-close)
-					.title Auto
-					.icon.ion-android-car
-				//- .element
-				//- 	.icon.ion-model-s
-				.element(ui-sref="app.rooms()" menu-close)
-					.title Vrooms
-					.icon.ion-location
-				.element.logout(ng-click="askForLogout()" menu-close)
-					.title Logout
-					.icon.ion-android-exit
+//- 	ion-side-menu(side="left" width="100")
+//- 		ion-scroll(direction="y")
+//- 			.sidemenu
+//- 				.element(ui-sref="app.home()" menu-close)
+//- 					.title Home
+//- 					.icon.ion-home
+//- 				.element(ui-sref="app.profile()" menu-close)
+//- 					.title Profilo
+//- 					.icon.ion-person
+//- 				.element(ui-sref="app.notifications()" menu-close)
+//- 					.title Notifiche
+//- 					.bubblebadge(ng-show="total_notifications") {{total_notifications}}
+//- 					.icon.ion-android-notifications
+//- 				.element(ui-sref="app.cars()" ng-if="user.is_driver" menu-close)
+//- 					.title Auto
+//- 					.icon.ion-android-car
+//- 				//- .element
+//- 				//- 	.icon.ion-model-s
+//- 				.element(ui-sref="app.rooms()" menu-close)
+//- 					.title Vrooms
+//- 					.icon.ion-location
+//- 				.element.logout(ng-click="askForLogout()" menu-close)
+//- 					.title Logout
+//- 					.icon.ion-android-exit

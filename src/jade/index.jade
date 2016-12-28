@@ -6,14 +6,14 @@ html
     title PickApp
 
     link(href="css/ionic.app.min.css" rel="stylesheet")
-    
+
     // gmap
     script(src='https://maps.googleapis.com/maps/api/js?sensor=false')
 
     // ionic/angularjs js
     script(src="lib/ionic/js/ionic.bundle.js")
     script(src="lib/angular-cookie/angular-cookie.min.js")
-    script(src="lib/ng-token-auth/dist/ng-token-auth.js")
+    // script(src="lib/ng-token-auth/dist/ng-token-auth.js")
     script(src="lib/angular-messages/angular-messages.min.js")
     script(src="lib/ionic.cloud.min.js")
 
@@ -27,7 +27,6 @@ html
     // cordova script (this will be a 404 during development)
     script(src="cordova.js")
     script(src="js/ng-cordova.min.js")
-        
+
   body(ng-app="pickapp")
     ion-nav-view(name="appContent")
-    
