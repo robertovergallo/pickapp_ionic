@@ -16,7 +16,7 @@ ion-view.rooms
 
     .rooms_list(ng-if="search_results.length > 0")
       .room(ng-repeat="room in search_results" ui-sref="app.room({room_id: room.id})")
-        .bg(style="background-image: url({{room.image_url}})")
+        .bg(style="background-image: url(https:{{room.image_url}})")
         p {{room.name}}
 
     .row(ng-if="search_results.length == 0")

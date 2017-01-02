@@ -1,16 +1,23 @@
-angular.module('pickapp').controller 'ProfileDriverController', ($scope, $rootScope, $ionicPlatform, $ionicActionSheet, $ionicLoading, DriverDetail, User) ->
+angular.module('pickapp').controller 'ProfileDriverController', ($scope, $rootScope, $ionicPlatform, $ionicActionSheet, $ionicLoading, DriverDetail, $ionicScrollDelegate, User) ->
 
 
 	$scope.dati_italia = anagrafica
-	
+
 	# Camera Handling
 
 	$scope.driverDetails = {}
 
+	# Pull Update
+
+	$scope.pullUpdate = ->
+		User.fetchUserInfo($rootScope.user.id).then (resp) ->
+			$rootScope.user = resp.data
+			$scope.$broadcast('scroll.refreshComplete');
+
 	$ionicPlatform.ready ->
 		$scope.selectPhoto = (select_photo_for) ->
 
-			camera_options = 
+			camera_options =
 				quality: 75
 				destinationType: 0
 				sourceType: 1
@@ -58,16 +65,14 @@ angular.module('pickapp').controller 'ProfileDriverController', ($scope, $rootSc
 			)
 
 
-
-
 	$scope.handleBecameDriverForm = ->
 		if $scope.driverDetails.accept_terms
 			$scope.driverDetails.user_id = $rootScope.user.id
 			DriverDetail.createDriverDetail($scope.driverDetails).then( (resp) ->
 				$rootScope.showAlert 'Grazie', 'Abbiamo ricevuto i tuoi dati, se è tutto ok a breve verrai confermato!'
+				$ionicScrollDelegate.$getByHandle('profile_driver_scroller').scrollTop()
 				User.fetchUserInfo($rootScope.user.id).then (resp) ->
 					$rootScope.user = resp.data
 			, (error) ->
 				$rootScope.showAlert 'Errore', 'Compila tutti i dati necessari!'
 			)
-		

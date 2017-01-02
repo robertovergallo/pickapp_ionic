@@ -12,7 +12,7 @@ angular.module('pickapp').controller 'NotificationsController', ($scope, $state,
 
 	$scope.toggleAllNotifications = ->
 		$scope.display_all_notifications = !$scope.display_all_notifications
-	
+
 	$scope.pullUpdate = ->
 		getNotifications()
 		$scope.$broadcast('scroll.refreshComplete');
@@ -41,7 +41,6 @@ angular.module('pickapp').controller 'NotificationsController', ($scope, $state,
 			$rootScope.messages_count = $rootScope.messages_count.length
 
 			$rootScope.total_notifications = $rootScope.notification_count + $rootScope.messages_count
-			console.log $rootScope.messages
 		)
 
 	getNotifications()
@@ -52,7 +51,7 @@ angular.module('pickapp').controller 'NotificationsController', ($scope, $state,
 		Notification.setNotificationClicked($rootScope.user.id, notification_id).then( (resp) ->
 			getNotifications()
 		)
-		
+
 
 	$scope.convertUrl = (notification) ->
 		if notification
@@ -63,13 +62,13 @@ angular.module('pickapp').controller 'NotificationsController', ($scope, $state,
 				splitted_url = url.split('/')
 
 				# 4 travel offers & requests
-				
+
 				if splitted_url[0] == "rooms"
 					room_id = parseInt(splitted_url[1])
 
 					if splitted_url[2] == "travels"
 						travel_offer_id = parseInt(splitted_url[3])
-						
+
 						if notification.is_message
 							if notification.title == "Hai ricevuto un messaggio pubblico!"
 								$state.go('app.room_offer', {room_id: room_id, travel_id: travel_offer_id, open_public_chat: 'true'})
@@ -91,5 +90,3 @@ angular.module('pickapp').controller 'NotificationsController', ($scope, $state,
 			else
 				if (notification.title == "Aggiungi un'auto!" || notification.title == "Sei diventato un driver!")
 					$state.go('app.cars')
-
-

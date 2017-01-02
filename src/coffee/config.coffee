@@ -1,4 +1,8 @@
-angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvider, $authProvider, auth_base, $ionicCloudProvider, $ionicConfigProvider) ->
+angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvider, $authProvider, $logProvider, auth_base, $ionicCloudProvider, $ionicConfigProvider) ->
+
+  # Logging
+
+  $logProvider.debugEnabled(false)
 
   # Ionic Cloud
 

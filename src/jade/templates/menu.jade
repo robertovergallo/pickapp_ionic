@@ -20,10 +20,11 @@ ion-tabs.tabs-background-balanced.tabs-color-light.tabs-icon-top
 	a.tab-item.favorites_toggle(ng-init="fav_rooms_menu = false" ng-click="fav_rooms_menu = !fav_rooms_menu" ng-class="{'active': fav_rooms_menu == true}")
 		i.icon.ion-star
 		| Preferiti
-	
+
 	.submenu(ng-class="{'open': fav_rooms_menu == true}")
 		hscroller.preferred_rooms(zooming="false" direction="x" ng-click="fav_rooms_menu = !fav_rooms_menu")
 			hcard.room(ng-repeat="room in user.preferred_rooms track by $index" desc="{{room.name}}"  ui-sref="app.room({room_id: room.id})")
+			hcard.room(desc="SCOPRI LE VROOM!" ui-sref="app.rooms" ng-ig="user.preferred_rooms.length == 0")
 
 
 //- ion-side-menus(enable-menu-with-back-views="false")
@@ -31,7 +32,7 @@ ion-tabs.tabs-background-balanced.tabs-color-light.tabs-icon-top
 //- 		ion-nav-bar.bar-green
 //- 			ion-nav-back-button Indietro
 //- 			ion-nav-buttons(side="left")
-//- 				button.button.button-icon.button-clear.ion-navicon(menu-toggle="left") 
+//- 				button.button.button-icon.button-clear.ion-navicon(menu-toggle="left")
 
 //- 			ion-nav-title PickApp!
 
@@ -41,7 +42,7 @@ ion-tabs.tabs-background-balanced.tabs-color-light.tabs-icon-top
 
 //- 		ion-nav-view(animation="slide-left-right" name="menu_content")
 //- 			//- view contents gets loaded here
-		
+
 //- 		ion-footer-bar.bar-green.footer(align-title="center")
 //- 			button.button.button-clear(ng-init="fav_rooms_menu = false" ng-click="fav_rooms_menu = !fav_rooms_menu") Le tue Vroom
 //- 			.submenu(ng-class="{'open': fav_rooms_menu == true}")

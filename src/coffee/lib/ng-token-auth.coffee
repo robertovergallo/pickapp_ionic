@@ -659,7 +659,7 @@ angular.module('ng-token-auth', ['ipCookie'])
 
           # destroy auth token on server, destroy user auth credentials
           signOut: ->
-            $http.delete(@apiUrl() + @getConfig().signOutUrl)
+            $http.get(@apiUrl() + @getConfig().signOutUrl)
               .success((resp) =>
                 @invalidateTokens()
                 $rootScope.$broadcast('auth:logout-success')

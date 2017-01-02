@@ -4,7 +4,7 @@ angular.module('pickapp').service('User', ($q, $http, $rootScope, api_base, auth
   this.checkForAvailableEmail = (email)->
     deferred = $q.defer()
     $http({
-      url: auth_base + '/check_for_available_email',
+      url: api_base + '/check_for_available_email',
       method: 'GET'
       params: {
         email: email

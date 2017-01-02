@@ -2,16 +2,17 @@ angular.module('pickapp').service('Auth', ($rootScope, $log, $ionicModal, $ionic
 
   fakeLogin = ->
     setTimeout( () ->
-      loginForm = {email:'a.macchieraldo@koodit.it', password: 'password'}
+      # loginForm = {email:'a.macchieraldo@koodit.it', password: 'password'}
+      loginForm = {email:'macchie.raldo@koodit.it', password: 'password'}
       $auth.submitLogin(loginForm)
     , 1500)
 
   user_has_photo = ->
-    if (!$rootScope.user.profile_image_url)
-      if $rootScope.user.image
-        $rootScope.user.profile_image_url = $rootScope.user.image + "?width=400&height=400"
-      else
-        $rootScope.user.profile_image_url = "https://s3-eu-west-1.amazonaws.com/koodit/pickapp/shared/missing_user_photo.jpg"
+    # if (!$rootScope.user.profile_image_url)
+    #   if $rootScope.user.image
+    #     $rootScope.user.profile_image_url = $rootScope.user.image + "?width=400&height=400"
+    #   else
+    #     $rootScope.user.profile_image_url = "https://s3-eu-west-1.amazonaws.com/koodit/pickapp/shared/missing_user_photo.jpg"
 
   getNotifications = ->
     Notification.getNotifications($rootScope.user.id).then( (resp) ->
@@ -51,22 +52,22 @@ angular.module('pickapp').service('Auth', ($rootScope, $log, $ionicModal, $ionic
     )
 
   finallyRegisterPush =->
-    console.log "FINALLY REG PUSH"
+    $log.debug "FINALLY REG PUSH"
     $ionicPush.register().then((t) ->
       $ionicPush.saveToken t
     ).then (t) ->
-      console.log 'Token saved:', t.token
+      $log.debug 'Token saved:', t.token
       $ionicPush.saveToken(t)
       $ionicUser.save()
       User.updateDeviceTokens(t.token, $rootScope.user.id).then (resp) ->
-        console.log resp
+        $log.debug resp
 
     $rootScope.$on 'cloud:push:notification', (event, data) ->
       msg = data.message
       $log.debug "#{msg.title}: #{msg.text}"
 
   pushRegister = ->
-    console.log "PUSH REG"
+    $log.debug "PUSH REG"
     ionic_user = { email: 'pick_user_' + $rootScope.user.id + '@pickapp.it', password: md5($rootScope.user.id) }
 
     $ionicAuth.login('basic', ionic_user).then( ()->
@@ -161,7 +162,6 @@ angular.module('pickapp').service('Auth', ($rootScope, $log, $ionicModal, $ionic
 
       $rootScope.$on 'auth:validation-success', ->
         $log.debug('auth:validation-success', $rootScope.user)
-        console.log "auth:validation-success"
         $rootScope.auth_modal.hide()
         user_has_photo()
         getNotifications()
@@ -169,7 +169,6 @@ angular.module('pickapp').service('Auth', ($rootScope, $log, $ionicModal, $ionic
         pushRegister()
 
       $rootScope.$on 'auth:validation-error', ->
-        console.log "auth:validation-error"
         $rootScope.auth_modal.show()
         pushUnregister()
 
@@ -188,7 +187,6 @@ angular.module('pickapp').service('Auth', ($rootScope, $log, $ionicModal, $ionic
       $auth.validateUser()
       .then (resp) ->
         $log.debug('auth:validation-success', $rootScope.user)
-        console.log "auth:validation-success"
         $rootScope.auth_modal.hide()
         user_has_photo()
         getNotifications()

@@ -2,15 +2,15 @@ ion-view.room
 	ion-nav-title {{room.name}}
 	ion-content
 		.room_header
-			.bg(style="background-image: url({{room.image_url}})")
+			.bg(style="background-image: url(https:{{room.image_url}})")
 			.room_info(ng-if="!room.is_restricted")
 				span
 					i.icon.ion-ios-people.assertive
-					b {{room.preferred_count}} 
+					b {{room.preferred_count}}
 					| iscritti
 				span
 					i.icon.ion-arrow-swap.positive
-					b {{room.travels.length}} 
+					b {{room.travels.length}}
 					| viaggi
 			p {{room.name}}
 
@@ -61,8 +61,8 @@ script(id='travel-request-modal.html', type='text/ng-template')
 		ion-content
 			.list
 				ion-toggle(ng-init="newTravelRequest.towards_room = true" ng-model="newTravelRequest.towards_room" toggle-class="toggle-calm")
-					span(ng-if="!newTravelRequest.towards_room") Da 
-					span(ng-if="newTravelRequest.towards_room") Verso 
+					span(ng-if="!newTravelRequest.towards_room") Da
+					span(ng-if="newTravelRequest.towards_room") Verso
 					| {{room.name}}
 
 				ion-toggle(ng-init="newTravelRequest.can_repay = false" ng-model="newTravelRequest.can_repay" toggle-class="toggle-calm") Possibilità di rimborso
@@ -85,7 +85,7 @@ script(id='travel-request-modal.html', type='text/ng-template')
 					| Data di partenza
 					span.item-note(ng-show="!newTravelRequest.one_way_datetime") Seleziona data
 					span.item-note(ng-show="newTravelRequest.one_way_datetime") {{newTravelRequest.one_way_datetime | date:"dd MMMM 'alle' HH:mm"}}
-					
+
 				ion-toggle(ng-init="newTravelRequest.flexible_departure = false" ng-model="newTravelRequest.flexible_departure" toggle-class="toggle-calm") Orario flessibile
 
 			.row
@@ -100,9 +100,9 @@ script(id='travel-offer-modal.html', type='text/ng-template')
 				button.button.button-icon.ion-ios-close-outline(ng-click="closeTravelOfferModal()")
 		ion-content
 			.list
-				ion-toggle(ng-init="newTravelOffer.towards_room = true" ng-model="newTravelOffer.towards_room" toggle-class="toggle-calm") 
-					span(ng-if="!newTravelOffer.towards_room") Da 
-					span(ng-if="newTravelOffer.towards_room") Verso 
+				ion-toggle(ng-init="newTravelOffer.towards_room = true" ng-model="newTravelOffer.towards_room" toggle-class="toggle-calm")
+					span(ng-if="!newTravelOffer.towards_room") Da
+					span(ng-if="newTravelOffer.towards_room") Verso
 					| {{room.name}}
 
 				.item.item-input.item-select
@@ -144,7 +144,7 @@ script(id='travel-offer-modal.html', type='text/ng-template')
 
 				label.item.item-input(ng-show="newTravelOffer.is_recursive")
 					input(type="number" placeholder="Per quante settimane?" ng-model="newTravelOffer.repetitions_amount")
-				
+
 				.row
 					.col
 						.section_title
@@ -162,7 +162,7 @@ script(id='travel-offer-modal.html', type='text/ng-template')
 			.row
 				.col
 					.button.button-block.button-positive(ng-click="sendNewTravelOffer()") Invia
-			
+
 
 script(id='map-modal.html', type='text/ng-template')
 	ion-modal-view.map_modal
@@ -184,5 +184,3 @@ script(id='description-modal.html', type='text/ng-template')
 			.row
 				.col
 					p {{room.description}}
-
-			

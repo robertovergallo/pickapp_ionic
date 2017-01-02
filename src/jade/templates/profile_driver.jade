@@ -1,6 +1,7 @@
 ion-view.profile_driver
 	ion-nav-title Stato Guidatore
-	ion-content(padding="true")
+	ion-content(padding="true" delegate-handle="profile_driver_scroller")
+		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
 		div(ng-if="!user.pending_driver_verification && !user.is_driver")
 			.card
 				.item.item-divider Patente
@@ -8,7 +9,7 @@ ion-view.profile_driver
 					p(ng-if="!driverDetails.patente_data.src") Nessuna foto selezionata.
 					img.image_data(ng-if="driverDetails.patente_data.src" src="{{driverDetails.patente_data.src}}")
 				a.item.item-icon-left(ng-click="selectPhoto('patente')")
-					i.icon.ion-upload 
+					i.icon.ion-upload
 					| Seleziona Foto
 
 				label.item.item-input.item-select
@@ -54,6 +55,6 @@ ion-view.profile_driver
 				b Guidatore autorizzato!
 				br
 				| Sei un guidatore PickApp autorizzato.
-		
+
 		//- .image(ng-click="selectPhoto()" style='background-image: url({{registerForm.profile_image_data.src}})')
 		//- 						span(ng-if="!registerForm.profile_image_data.src") Foto Profilo

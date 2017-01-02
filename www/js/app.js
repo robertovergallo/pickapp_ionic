@@ -105,8 +105,9 @@ angular.module('pickapp').filter('nl2br', [
   }
 ]);
 
-angular.module('pickapp').config(function($stateProvider, $urlRouterProvider, $httpProvider, $authProvider, auth_base, $ionicCloudProvider, $ionicConfigProvider) {
+angular.module('pickapp').config(function($stateProvider, $urlRouterProvider, $httpProvider, $authProvider, $logProvider, auth_base, $ionicCloudProvider, $ionicConfigProvider) {
   var omniauth_window_type, storage_type;
+  $logProvider.debugEnabled(false);
   $ionicCloudProvider.init({
     "core": {
       "app_id": "aaa54618"
@@ -513,8 +514,7 @@ angular.module('pickapp').controller('NotificationsController', function($scope,
         return element.clicked === false;
       });
       $rootScope.messages_count = $rootScope.messages_count.length;
-      $rootScope.total_notifications = $rootScope.notification_count + $rootScope.messages_count;
-      return console.log($rootScope.messages);
+      return $rootScope.total_notifications = $rootScope.notification_count + $rootScope.messages_count;
     });
   };
   getNotifications();
@@ -731,9 +731,15 @@ angular.module('pickapp').controller('ProfileController', function($scope, $stat
   };
 });
 
-angular.module('pickapp').controller('ProfileDriverController', function($scope, $rootScope, $ionicPlatform, $ionicActionSheet, $ionicLoading, DriverDetail, User) {
+angular.module('pickapp').controller('ProfileDriverController', function($scope, $rootScope, $ionicPlatform, $ionicActionSheet, $ionicLoading, DriverDetail, $ionicScrollDelegate, User) {
   $scope.dati_italia = anagrafica;
   $scope.driverDetails = {};
+  $scope.pullUpdate = function() {
+    return User.fetchUserInfo($rootScope.user.id).then(function(resp) {
+      $rootScope.user = resp.data;
+      return $scope.$broadcast('scroll.refreshComplete');
+    });
+  };
   $ionicPlatform.ready(function() {
     return $scope.selectPhoto = function(select_photo_for) {
       var camera_options, hideSheet;
@@ -789,6 +795,7 @@ angular.module('pickapp').controller('ProfileDriverController', function($scope,
       $scope.driverDetails.user_id = $rootScope.user.id;
       return DriverDetail.createDriverDetail($scope.driverDetails).then(function(resp) {
         $rootScope.showAlert('Grazie', 'Abbiamo ricevuto i tuoi dati, se è tutto ok a breve verrai confermato!');
+        $ionicScrollDelegate.$getByHandle('profile_driver_scroller').scrollTop();
         return User.fetchUserInfo($rootScope.user.id).then(function(resp) {
           return $rootScope.user = resp.data;
         });
@@ -2588,7 +2595,7 @@ angular.module('ng-token-auth', ['ipCookie']).provider('$auth', function() {
               return this.deleteData('auth_headers');
             },
             signOut: function() {
-              return $http["delete"](this.apiUrl() + this.getConfig().signOutUrl).success((function(_this) {
+              return $http.get(this.apiUrl() + this.getConfig().signOutUrl).success((function(_this) {
                 return function(resp) {
                   _this.invalidateTokens();
                   return $rootScope.$broadcast('auth:logout-success');
@@ -2915,21 +2922,13 @@ angular.module('pickapp').service('Auth', function($rootScope, $log, $ionicModal
     return setTimeout(function() {
       var loginForm;
       loginForm = {
-        email: 'a.macchieraldo@koodit.it',
+        email: 'macchie.raldo@koodit.it',
         password: 'password'
       };
       return $auth.submitLogin(loginForm);
     }, 1500);
   };
-  user_has_photo = function() {
-    if (!$rootScope.user.profile_image_url) {
-      if ($rootScope.user.image) {
-        return $rootScope.user.profile_image_url = $rootScope.user.image + "?width=400&height=400";
-      } else {
-        return $rootScope.user.profile_image_url = "https://s3-eu-west-1.amazonaws.com/koodit/pickapp/shared/missing_user_photo.jpg";
-      }
-    }
-  };
+  user_has_photo = function() {};
   getNotifications = function() {
     return Notification.getNotifications($rootScope.user.id).then(function(resp) {
       $rootScope.notifications = $filter('filter')(resp.data, function(element) {
@@ -2961,15 +2960,15 @@ angular.module('pickapp').service('Auth', function($rootScope, $log, $ionicModal
     });
   };
   finallyRegisterPush = function() {
-    console.log("FINALLY REG PUSH");
+    $log.debug("FINALLY REG PUSH");
     $ionicPush.register().then(function(t) {
       return $ionicPush.saveToken(t);
     }).then(function(t) {
-      console.log('Token saved:', t.token);
+      $log.debug('Token saved:', t.token);
       $ionicPush.saveToken(t);
       $ionicUser.save();
       return User.updateDeviceTokens(t.token, $rootScope.user.id).then(function(resp) {
-        return console.log(resp);
+        return $log.debug(resp);
       });
     });
     return $rootScope.$on('cloud:push:notification', function(event, data) {
@@ -2980,7 +2979,7 @@ angular.module('pickapp').service('Auth', function($rootScope, $log, $ionicModal
   };
   pushRegister = function() {
     var ionic_user;
-    console.log("PUSH REG");
+    $log.debug("PUSH REG");
     ionic_user = {
       email: 'pick_user_' + $rootScope.user.id + '@pickapp.it',
       password: md5($rootScope.user.id)
@@ -3066,7 +3065,6 @@ angular.module('pickapp').service('Auth', function($rootScope, $log, $ionicModal
       });
       $rootScope.$on('auth:validation-success', function() {
         $log.debug('auth:validation-success', $rootScope.user);
-        console.log("auth:validation-success");
         $rootScope.auth_modal.hide();
         user_has_photo();
         getNotifications();
@@ -3074,7 +3072,6 @@ angular.module('pickapp').service('Auth', function($rootScope, $log, $ionicModal
         return pushRegister();
       });
       $rootScope.$on('auth:validation-error', function() {
-        console.log("auth:validation-error");
         $rootScope.auth_modal.show();
         return pushUnregister();
       });
@@ -3082,7 +3079,6 @@ angular.module('pickapp').service('Auth', function($rootScope, $log, $ionicModal
       $rootScope.$on('auth:registration-email-success', function() {});
       return $auth.validateUser().then(function(resp) {
         $log.debug('auth:validation-success', $rootScope.user);
-        console.log("auth:validation-success");
         $rootScope.auth_modal.hide();
         user_has_photo();
         getNotifications();
@@ -3777,7 +3773,7 @@ angular.module('pickapp').service('User', function($q, $http, $rootScope, api_ba
     var deferred;
     deferred = $q.defer();
     $http({
-      url: auth_base + '/check_for_available_email',
+      url: api_base + '/check_for_available_email',
       method: 'GET',
       params: {
         email: email
