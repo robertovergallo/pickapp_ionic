@@ -1928,6 +1928,8 @@ angular.module('pickapp').controller('WelcomeController', function($scope, $root
   });
 });
 
+
+
 angular.module('pickapp').directive('confirmEmail', function($interpolate, $parse, User) {
   return {
     require: 'ngModel',
@@ -2005,8 +2007,6 @@ angular.module('pickapp').directive('confirmPwd', function($interpolate, $parse)
     }
   ]);
 })(window.ionic);
-
-
 
 if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports) {
   module.exports = 'ng-token-auth';
