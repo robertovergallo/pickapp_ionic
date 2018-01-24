@@ -1,60 +1,71 @@
 ion-view.rooms
-	ion-nav-title Richieste
-	ion-content(padding="true")
-		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
+  ion-nav-title Richieste
+  ion-content(padding="true")
+    ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
 
-		.travel_card(ng-repeat="request in room.travel_requests | orderBy:'one_way_datetime'")
-			.tc_header
-				.tc_user_image(style="background-image: url({{request.user.profile_image_url}})")
-				.tc_h_data
-					h2 {{request.user.name}} {{request.user.surname}} 
-					p {{request.one_way_datetime | date:"dd MMMM 'alle' HH:mm"}}
-			.tc_body
-				.tc_b_data
-					i.icon.ion-ios-flag.balanced
-					p 
-						b Da: 
-						| {{request.starting_address}}
-				.tc_b_data
-					i.icon.ion-ios-location.assertive
-					p
-						b A: 
-						| {{room.name}}
-			//- .tc_footer
-			//- 	.tc_f_data.assertive(ng-if="!travel.completed && !travel.waiting_for_confirm")
-			//- 		i.icon.ion-android-alert
-			//- 		p Non ancora Svolto
-			//- 	.tc_f_data.balanced(ng-if="travel.completed")
-			//- 		i.icon.ion-ios-checkmark
-			//- 		p Completato dal Guidatore
-			//- 	.tc_f_data.calm(ng-if="travel.waiting_for_confirm")
-			//- 		i.icon.ion-ios-checkmark-outline
-			//- 		p In attesa di Conferma da parte del Guidatore
-			.tc_actions
-				.tc_a_data(ui-sref="app.room_request({room_id: room.id, travel_id: request.id})")
-					i.icon.ion-eye
-					p Dettagli
+    .travel_card(ng-repeat="request in room.travel_requests | orderBy:'one_way_datetime'")
+      .tc_header
+        .tc_user_image(style="background-image: url(https://{{request.user.profile_image_url}})")
+        .tc_h_data
+          h2 {{request.user.name}} {{request.user.surname}}
+          p {{request.one_way_datetime | date:"dd MMMM 'alle' HH:mm"}}
+      .tc_body(ng-if="request.towards_room")
+        .tc_b_data
+          i.icon.ion-ios-flag.balanced
+          p
+            b Da:
+            | {{request.starting_address}}
+        .tc_b_data
+          i.icon.ion-ios-location.assertive
+          p
+            b A:
+            | {{room.name}}
+      .tc_body(ng-if="!request.towards_room")
+        .tc_b_data
+          i.icon.ion-ios-flag.balanced
+          p
+            b Da:
+            | {{room.name}}
+        .tc_b_data
+          i.icon.ion-ios-location.assertive
+          p
+            b A:
+            | {{request.destination_address}}
+      //- .tc_footer
+      //- 	.tc_f_data.assertive(ng-if="!travel.completed && !travel.waiting_for_confirm")
+      //- 		i.icon.ion-android-alert
+      //- 		p Non ancora Svolto
+      //- 	.tc_f_data.balanced(ng-if="travel.completed")
+      //- 		i.icon.ion-ios-checkmark
+      //- 		p Completato dal Guidatore
+      //- 	.tc_f_data.calm(ng-if="travel.waiting_for_confirm")
+      //- 		i.icon.ion-ios-checkmark-outline
+      //- 		p In attesa di Conferma da parte del Guidatore
+      .tc_actions
+        .tc_a_data(ui-sref="app.room_request({room_id: room.id, travel_id: request.id})")
+          i.icon.ion-eye
+          p Dettagli
 
-		//- .list.card(ng-repeat="request in room.travel_requests | orderBy:'one_way_datetime'")
-		//- 	.item.item-avatar
-		//- 		img(src="{{request.user.profile_image_url}}")
-		//- 		h2(ng-if="!request.user.surname") {{request.user.name}}
-		//- 		h2(ng-if="request.user.surname") {{request.user.name}} {{request.user.surname}} 
-		//- 		p {{request.one_way_datetime | date:"dd MMMM 'alle' HH:mm"}}
-		//- 	.item.item-icon-left
-		//- 		i.icon.ion-ios-flag-outline.balanced
-		//- 		b Da: 
-		//- 		| {{request.starting_address}}
-		//- 	.item.item-icon-left
-		//- 		i.icon.ion-ios-flag.assertive
-		//- 		b A: 
-		//- 		| {{room.name}}
+    //- .list.card(ng-repeat="request in room.travel_requests | orderBy:'one_way_datetime'")
+    //- 	.item.item-avatar
+    //- 		img(src="{{request.user.profile_image_url}}")
+    //- 		h2(ng-if="!request.user.surname") {{request.user.name}}
+    //- 		h2(ng-if="request.user.surname") {{request.user.name}} {{request.user.surname}}
+    //- 		p {{request.one_way_datetime | date:"dd MMMM 'alle' HH:mm"}}
+    //- 	.item.item-icon-left
+    //- 		i.icon.ion-ios-flag-outline.balanced
+    //- 		b Da:
+    //- 		| {{request.starting_address}}
+    //- 	.item.item-icon-left
+    //- 		i.icon.ion-ios-flag.assertive
+    //- 		b A:
+    //- 		| {{room.name}}
 
-		//- 	.item.tabs.tabs-secondary.tabs-icon-left
-		//- 		a.tab-item(ui-sref="app.room_request({room_id: room.id, travel_id: request.id})")
-		//- 			i.icon.ion-eye
-		//- 			| Dettagli
+    //- 	.item.tabs.tabs-secondary.tabs-icon-left
+    //- 		a.tab-item(ui-sref="app.room_request({room_id: room.id, travel_id: request.id})")
+    //- 			i.icon.ion-eye
+    //- 			| Dettagli
 
-		.row(ng-if="room.travel_requests.length == 0")
-			.col
-				p(style="color: #666; font-size: 14px; margin: 20px 0px; text-align: center;") Nessuno richiede passaggi verso questa destinazione. Sarai tu il primo?
+    .row(ng-if="room.travel_requests.length == 0")
+      .col
+        p(style="color: #666; font-size: 14px; margin: 20px 0px; text-align: center;") Nessuno richiede passaggi verso questa destinazione. Sarai tu il primo?

@@ -8,10 +8,10 @@ angular.module 'pickapp', [
   'ionic.contrib.ui.hscrollcards'
 ]
 
-if window.location.protocol == 'http:'
+if (window.location.protocol == 'http:' && window.location.host != "localhost:8080")
   # DEV
-  angular.module('pickapp').constant 'api_base', '/api_base'
-  angular.module('pickapp').constant 'auth_base', '/api_base'
+  angular.module('pickapp').constant 'api_base', '/api_base_me'
+  angular.module('pickapp').constant 'auth_base', '/api_base_me'
 else
   # PROD
   angular.module('pickapp').constant 'api_base', 'http://www.pick-app.it/api'

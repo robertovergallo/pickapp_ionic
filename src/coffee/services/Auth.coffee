@@ -194,7 +194,8 @@ angular.module('pickapp').service('Auth', ($rootScope, $log, $ionicModal, $ionic
         pushRegister()
       .catch (err) ->
         $rootScope.auth_modal.show()
-        fakeLogin() if window.location.protocol == 'http:'
+        if window.location.protocol == 'http:' && window.location.host != "localhost:8080"
+          fakeLogin()
 
 
       # if !$rootScope.user.id

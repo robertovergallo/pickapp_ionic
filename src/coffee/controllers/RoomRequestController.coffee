@@ -4,21 +4,21 @@ angular.module('pickapp').controller 'RoomRequestController', ($scope, $rootScop
 		if window.cordova and window.cordova.plugins.Keyboard
 			cordova.plugins.Keyboard.disableScroll true
 			cordova.plugins.Keyboard.hideKeyboardAccessoryBar true
-	
+
 
 	$scope.pullUpdate = ->
 		getData()
 		$scope.$broadcast('scroll.refreshComplete');
-	
+
 	getData = ()->
 		TravelRequest.getTravelRequest($stateParams.room_id, $stateParams.travel_id).then( (resp) ->
 			$scope.travel_request = resp.data
 
-			$scope.map = { 
-				center: 
+			$scope.map = {
+				center:
 						latitude: resp.data.lat
-						longitude: resp.data.lng 
-				zoom: 16 
+						longitude: resp.data.lng
+				zoom: 16
 				events: {
 					tilesloaded: (map) ->
 						$scope.$apply()
@@ -96,7 +96,7 @@ angular.module('pickapp').controller 'RoomRequestController', ($scope, $rootScop
 
 	# Passenger Methods
 
-	
+
 
 	# Travel Owner Methods
 
@@ -109,4 +109,3 @@ angular.module('pickapp').controller 'RoomRequestController', ($scope, $rootScop
 				TravelRequest.destroyTravelRequest($stateParams.room_id, $stateParams.travel_id).then( (resp) ->
 					$ionicHistory.goBack()
 				)
-			

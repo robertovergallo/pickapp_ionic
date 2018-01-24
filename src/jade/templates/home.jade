@@ -6,7 +6,7 @@ ion-view.home.rooms(ng-class="{'empty': !user.id}")
 	ion-content.has-subheader(padding="true")
 		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
 		.user_preview
-			.user_image(style="background-image: url({{user.profile_image_url}})")
+			.user_image(style="background-image: url(https://{{user.profile_image_url}})")
 			.badges_box
 				.badge(ng-click="showBadgesDialog(0)" ng-class="{'active': user.ecoking_badge.completed}")
 					.icon
@@ -50,13 +50,13 @@ ion-view.home.rooms(ng-class="{'empty': !user.id}")
 				.content
 					h2 Passeggeri
 					p(ng-bind="display_text.passenger_payoff")
-			
+
 			.section.car
 				.content
 					h2 PickApp
 					p(ng-bind="display_text.pickapp_payoff")
 
-		//- .section_title 
+		//- .section_title
 		//- 	h2 Le tue Vroom
 
 		//- .rooms_list

@@ -1,225 +1,238 @@
-angular.module('pickapp').controller 'RoomController', ($scope, $rootScope, $stateParams, $ionicModal, $ionicHistory, Room, User, Car, TravelRequest, Travel) ->
+angular.module('pickapp').controller 'RoomController', ($ionicPlatform, $scope, $rootScope, $stateParams, $ionicModal, $ionicHistory, Room, User, Car, TravelRequest, Travel) ->
 
-	Room.getRoom($stateParams.room_id).then( (resp) ->
-		$scope.room = resp.data
+  $ionicPlatform.ready ->
+		if window.cordova and window.cordova.plugins.Keyboard
+			cordova.plugins.Keyboard.disableScroll true
+			cordova.plugins.Keyboard.hideKeyboardAccessoryBar false
 
-		$scope.map = { 
-			center: {
-				latitude: resp.data.lat
-				longitude: resp.data.long
-			},
-			zoom: 16,
-			events: {
-				tilesloaded: (map) ->
-					$scope.$apply()
-			}
-		}
+  Room.getRoom($stateParams.room_id).then( (resp) ->
+    $scope.room = resp.data
 
-		$scope.marker = {
-			id: 0,
-			coords: {
-				latitude: resp.data.lat
-				longitude: resp.data.long
-			},
-			options: { draggable: false }
-		}
-	)
+    $scope.map = {
+      center: {
+        latitude: resp.data.lat
+        longitude: resp.data.long
+      },
+      zoom: 16,
+      events: {
+        tilesloaded: (map) ->
+          $scope.$apply()
+      }
+    }
 
-	# Travel Request Modal
+    $scope.marker = {
+      id: 0,
+      coords: {
+        latitude: resp.data.lat
+        longitude: resp.data.long
+      },
+      options: { draggable: false }
+    }
+  )
 
-	$scope.newTravelRequest = {}
+  # Travel Request Modal
 
-	$scope.newTravelRequestDatePicker = () ->
-		date_picker_options = 
-			date: $scope.newTravelRequest.one_way_datetime || new Date()
-			mode: 'datetime'
-			locale: 'it_IT'
-			cancelText: 'Annulla'
-			okText: 'Conferma'
-			cancelButtonLabel: 'Annulla'
-			doneButtonLabel: 'Conferma'
-			allowOldDates: 'false'
-			minuteInterval: 5
-			is24Hour: true
+  $scope.newTravelRequest = {
+    towards_room: true
+  }
 
-		onSuccess = (date) ->
-			$scope.newTravelRequest.one_way_datetime = date
-			$scope.$apply()
+  $scope.newTravelRequestDatePicker = () ->
+    date_picker_options =
+      date: $scope.newTravelRequest.one_way_datetime || new Date()
+      mode: 'datetime'
+      locale: 'it_IT'
+      cancelText: 'Annulla'
+      okText: 'Conferma'
+      cancelButtonLabel: 'Annulla'
+      doneButtonLabel: 'Conferma'
+      allowOldDates: 'false'
+      minuteInterval: 5
+      is24Hour: true
 
-		onError = (error) ->
-			# Android only
-			# alert 'Error: ' + error
+    onSuccess = (date) ->
+      $scope.newTravelRequest.one_way_datetime = date
+      $scope.$apply()
 
-		datePicker.show date_picker_options, onSuccess, onError
+    onError = (error) ->
+      # Android only
+      # alert 'Error: ' + error
 
-	$scope.sendNewTravelRequest = () ->
-		$scope.newTravelRequest.passenger_id = $rootScope.user.id
-		$scope.newTravelRequest.room_id = $scope.room.id
-		$scope.newTravelRequest.is_one_way = true
+    datePicker.show date_picker_options, onSuccess, onError
 
-		if ($scope.newTravelRequest.starting_address_addr && $scope.newTravelRequest.starting_address_city && $scope.newTravelRequest.starting_address_cap)
-			$scope.newTravelRequest.starting_address = $scope.newTravelRequest.starting_address_addr + " " + $scope.newTravelRequest.starting_address_city + " " + $scope.newTravelRequest.starting_address_cap
+  $scope.sendNewTravelRequest = () ->
+    $scope.newTravelRequest.passenger_id = $rootScope.user.id
+    $scope.newTravelRequest.room_id = $scope.room.id
+    $scope.newTravelRequest.is_one_way = true
 
-			TravelRequest.createTravelRequest($scope.room.id, $scope.newTravelRequest).then( (resp) ->
-				console.log resp.data
-				$scope.closeTravelRequestModal()
-				$scope.newTravelRequest = {}
-				$rootScope.showAlert('Congratulazioni', 'Richiesta di passaggio inserita correttamente.')
-				# Room.getRoom($scope.room.id).then( (resp) ->
-				# 	$scope.room = resp.data
-				# 	$scope.newTravelRequest = {}
-				# )
-			)
+    if ($scope.newTravelRequest.starting_address_addr && $scope.newTravelRequest.starting_address_city && $scope.newTravelRequest.starting_address_cap)
+      $scope.newTravelRequest.starting_address = $scope.newTravelRequest.starting_address_addr + " " + $scope.newTravelRequest.starting_address_city + " " + $scope.newTravelRequest.starting_address_cap
+      $scope.newTravelRequest.desired_address = $scope.newTravelRequest.starting_address_addr
+      $scope.newTravelRequest.city = $scope.newTravelRequest.starting_address_city
+      $scope.newTravelRequest.zip_code = $scope.newTravelRequest.starting_address_cap
 
-	$ionicModal.fromTemplateUrl('travel-request-modal.html',
-		scope: $scope
-		animation: 'slide-in-up'
-	).then (modal) ->
-		$scope.travelRequestModal = modal
+      TravelRequest.createTravelRequest($scope.room.id, $scope.newTravelRequest).then( (resp) ->
+        console.log resp.data
+        $scope.closeTravelRequestModal()
+        $scope.newTravelRequest = {}
+        $rootScope.showAlert('Congratulazioni', 'Richiesta di passaggio inserita correttamente.')
+        # Room.getRoom($scope.room.id).then( (resp) ->
+        # 	$scope.room = resp.data
+        # 	$scope.newTravelRequest = {}
+        # )
+      )
 
-		Car.getUserCarsSlim($rootScope.user.id).then( (resp) ->
-			$scope.cars = resp.data
-		)
+  $ionicModal.fromTemplateUrl('travel-request-modal.html',
+    scope: $scope
+    animation: 'slide-in-up'
+  ).then (modal) ->
+    $scope.travelRequestModal = modal
 
-	$scope.showTravelRequestModal = ->
-		$scope.travelRequestModal.show()
+    Car.getUserCarsSlim($rootScope.user.id).then( (resp) ->
+      $scope.cars = resp.data
+    )
 
-	$scope.closeTravelRequestModal = ->
-		$scope.travelRequestModal.hide()
+  $scope.showTravelRequestModal = ->
+    $scope.travelRequestModal.show()
 
-	# Travel Offer Modal
+  $scope.closeTravelRequestModal = ->
+    $scope.travelRequestModal.hide()
 
-	$scope.newTravelOffer = {}
-	$scope.newTravelOffer.travel_stops = []
+  # Travel Offer Modal
 
-	$scope.newTravelOfferDatePicker = () ->
-		date_picker_options = 
-			date: $scope.newTravelOffer.departure_datetime || new Date()
-			mode: 'datetime'
-			locale: 'it_IT'
-			cancelText: 'Annulla'
-			okText: 'Conferma'
-			cancelButtonLabel: 'Annulla'
-			doneButtonLabel: 'Conferma'
-			allowOldDates: 'false'
-			minuteInterval: 5
-			is24Hour: true
+  $scope.newTravelOffer = {
+    towards_room: true
+  }
+  $scope.newTravelOffer.travel_stops = []
 
-		onSuccess = (date) ->
-			$scope.newTravelOffer.departure_datetime = date
-			$scope.$apply()
+  $scope.newTravelOfferDatePicker = () ->
+    date_picker_options =
+      date: $scope.newTravelOffer.departure_datetime || new Date()
+      mode: 'datetime'
+      locale: 'it_IT'
+      cancelText: 'Annulla'
+      okText: 'Conferma'
+      cancelButtonLabel: 'Annulla'
+      doneButtonLabel: 'Conferma'
+      allowOldDates: 'false'
+      minuteInterval: 5
+      is24Hour: true
 
-		onError = (error) ->
-			# Android only
-			# alert 'Error: ' + error
+    onSuccess = (date) ->
+      $scope.newTravelOffer.departure_datetime = date
+      $scope.$apply()
 
-		datePicker.show date_picker_options, onSuccess, onError
+    onError = (error) ->
+      # Android only
+      # alert 'Error: ' + error
 
-	$scope.newTravelOfferBackDatePicker = () ->
-		date_picker_options = 
-			date: $scope.newTravelOffer.departure_datetime || new Date()
-			mode: 'datetime'
-			locale: 'it_IT'
-			cancelText: 'Annulla'
-			okText: 'Conferma'
-			cancelButtonLabel: 'Annulla'
-			doneButtonLabel: 'Conferma'
-			allowOldDates: 'false'
-			minuteInterval: 5
-			is24Hour: true
+    datePicker.show date_picker_options, onSuccess, onError
 
-		onSuccess = (date) ->
-			$scope.newTravelOffer.back_departure_datetime = date
-			$scope.$apply()
+  $scope.newTravelOfferBackDatePicker = () ->
+    date_picker_options =
+      date: $scope.newTravelOffer.departure_datetime || new Date()
+      mode: 'datetime'
+      locale: 'it_IT'
+      cancelText: 'Annulla'
+      okText: 'Conferma'
+      cancelButtonLabel: 'Annulla'
+      doneButtonLabel: 'Conferma'
+      allowOldDates: 'false'
+      minuteInterval: 5
+      is24Hour: true
 
-		onError = (error) ->
-			# Android only
-			# alert 'Error: ' + error
+    onSuccess = (date) ->
+      $scope.newTravelOffer.back_departure_datetime = date
+      $scope.$apply()
 
-		datePicker.show date_picker_options, onSuccess, onError
+    onError = (error) ->
+      # Android only
+      # alert 'Error: ' + error
 
-	$scope.addTravelStop = ->
-		if (!$scope.newTravelOffer.travel_stops)
-			$scope.newTravelOffer.travel_stops = []
+    datePicker.show date_picker_options, onSuccess, onError
 
-		$scope.newTravelOffer.travel_stops.push({})
+  $scope.addTravelStop = ->
+    if (!$scope.newTravelOffer.travel_stops)
+      $scope.newTravelOffer.travel_stops = []
 
-	$scope.removeTravelStop = ->
-		lastItem = $scope.newTravelOffer.travel_stops.length-1
-		$scope.newTravelOffer.travel_stops.splice(lastItem)
+    $scope.newTravelOffer.travel_stops.push({})
 
-	$scope.sendNewTravelOffer = () ->
+  $scope.removeTravelStop = ->
+    lastItem = $scope.newTravelOffer.travel_stops.length-1
+    $scope.newTravelOffer.travel_stops.splice(lastItem)
 
-		if ($scope.newTravelOffer.departure_datetime && $scope.newTravelOffer.user_address_addr && $scope.newTravelOffer.user_address_city && $scope.newTravelOffer.user_address_cap && $scope.newTravelOffer.car_id)
-			$scope.newTravelOffer.user_address = $scope.newTravelOffer.user_address_addr + " " + $scope.newTravelOffer.user_address_city + " " + $scope.newTravelOffer.user_address_cap
-			$scope.newTravelOffer.driver_id = $rootScope.user.id
-			$scope.newTravelOffer.room_id = $scope.room.id
-			Travel.createTravel($scope.room.id, $scope.newTravelOffer).then( (resp) ->
-				$scope.newTravelOffer = {}
-				$scope.newTravelOffer.travel_stops = []
-				$scope.closeTravelOfferModal()
-				$rootScope.showAlert('Congratulazioni', 'Offerta di passaggio inserita correttamente.')
-			)
-		else
-			$rootScope.showAlert('Errore', 'Compila tutto il form per continuare.')
+  $scope.sendNewTravelOffer = () ->
 
-	$ionicModal.fromTemplateUrl('travel-offer-modal.html',
-		scope: $scope
-		animation: 'slide-in-up'
-	).then (modal) ->
-		$scope.travelOfferModal = modal
+    if ($scope.newTravelOffer.departure_datetime && $scope.newTravelOffer.user_address_addr && $scope.newTravelOffer.user_address_city && $scope.newTravelOffer.user_address_cap && $scope.newTravelOffer.car_id)
+      $scope.newTravelOffer.user_address = $scope.newTravelOffer.user_address_addr + " " + $scope.newTravelOffer.user_address_city + " " + $scope.newTravelOffer.user_address_cap
+      $scope.newTravelOffer.driver_id = $rootScope.user.id
+      $scope.newTravelOffer.room_id = $scope.room.id
+      $scope.newTravelOffer.repetions_amount = $scope.newTravelOffer.repetitions_amount
+      Travel.createTravel($scope.room.id, $scope.newTravelOffer).then( (resp) ->
+        $scope.newTravelOffer = {}
+        $scope.newTravelOffer.travel_stops = []
+        $scope.closeTravelOfferModal()
+        $rootScope.showAlert('Congratulazioni', 'Offerta di passaggio inserita correttamente.')
+      )
+    else
+      $rootScope.showAlert('Errore', 'Compila tutto il form per continuare.')
 
-	$scope.showTravelOfferModal = ->
-		$scope.travelOfferModal.show()
+  $ionicModal.fromTemplateUrl('travel-offer-modal.html',
+    scope: $scope
+    animation: 'slide-in-up'
+  ).then (modal) ->
+    $scope.travelOfferModal = modal
 
-	$scope.closeTravelOfferModal = ->
-		$scope.travelOfferModal.hide()
+  $scope.showTravelOfferModal = ->
+    $scope.travelOfferModal.show()
 
-	# Map Modal
+  $scope.closeTravelOfferModal = ->
+    $scope.travelOfferModal.hide()
 
-	$ionicModal.fromTemplateUrl('map-modal.html',
-		scope: $scope
-		animation: 'slide-in-up'
-	).then (modal) ->
-		$scope.mapModal = modal
+  # Map Modal
 
-	$scope.showMapModal = ->
-		$scope.mapModal.show()
+  $ionicModal.fromTemplateUrl('map-modal.html',
+    scope: $scope
+    animation: 'slide-in-up'
+  ).then (modal) ->
+    $scope.mapModal = modal
 
-	$scope.closeMapModal = ->
-		$scope.mapModal.hide()
+  $scope.showMapModal = ->
+    $scope.mapModal.show()
 
-	# Description Modal
+  $scope.closeMapModal = ->
+    $scope.mapModal.hide()
 
-	$ionicModal.fromTemplateUrl('description-modal.html',
-		scope: $scope
-		animation: 'slide-in-up'
-	).then (modal) ->
-		$scope.descriptionModal = modal
+  # Description Modal
 
-	$scope.showDescriptionModal = ->
-		$scope.descriptionModal.show()
+  $ionicModal.fromTemplateUrl('description-modal.html',
+    scope: $scope
+    animation: 'slide-in-up'
+  ).then (modal) ->
+    $scope.descriptionModal = modal
 
-	$scope.closeDescriptionModal = ->
-		$scope.descriptionModal.hide()
+  $scope.showDescriptionModal = ->
+    $scope.descriptionModal.show()
 
-	# Room Methods
+  $scope.closeDescriptionModal = ->
+    $scope.descriptionModal.hide()
 
-	$scope.toggleRoomFavourite = ->
-		if !$scope.room.is_favourite
-			Room.makeRoomFavourite($stateParams.room_id).then( (resp) ->
-				$scope.room.is_favourite = resp.data
-				User.getPreferredRooms($rootScope.user.id).then( (resp) ->
-					$rootScope.user.preferred_rooms = resp.data
-				)
-			)
-		else
-			Room.unmakeRoomFavourite($stateParams.room_id).then( (resp) ->
-				$scope.room.is_favourite = resp.data
-				User.getPreferredRooms($rootScope.user.id).then( (resp) ->
-					$rootScope.user.preferred_rooms = resp.data
-				)
-			)
-		
-		Room.getRoom($stateParams.room_id).then (resp) ->
-			$scope.room = resp.data
+  # Room Methods
+
+  $scope.toggleRoomFavourite = ->
+    if !$scope.room.is_favourite
+      Room.makeRoomFavourite($stateParams.room_id).then( (resp) ->
+        $scope.room.is_favourite = resp.data
+        User.getPreferredRooms($rootScope.user.id).then( (resp) ->
+          $rootScope.user.preferred_rooms = resp.data
+        )
+      )
+    else
+      Room.unmakeRoomFavourite($stateParams.room_id).then( (resp) ->
+        $scope.room.is_favourite = resp.data
+        User.getPreferredRooms($rootScope.user.id).then( (resp) ->
+          $rootScope.user.preferred_rooms = resp.data
+        )
+      )
+
+    Room.getRoom($stateParams.room_id).then (resp) ->
+      $scope.room = resp.data

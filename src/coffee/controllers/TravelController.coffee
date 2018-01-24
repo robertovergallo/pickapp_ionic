@@ -3,8 +3,8 @@ angular.module('pickapp').controller 'TravelController', ($scope, $rootScope, $i
 	$ionicPlatform.ready ->
 		if window.cordova and window.cordova.plugins.Keyboard
 			cordova.plugins.Keyboard.disableScroll true
-			cordova.plugins.Keyboard.hideKeyboardAccessoryBar true
-	
+			cordova.plugins.Keyboard.hideKeyboardAccessoryBar false
+
 	# Data Parse
 
 	getData = ->
@@ -16,11 +16,11 @@ angular.module('pickapp').controller 'TravelController', ($scope, $rootScope, $i
 
 			$ionicLoading.hide()
 
-			$scope.map = { 
-				center: 
+			$scope.map = {
+				center:
 						latitude: resp.data.starting_lat
-						longitude: resp.data.starting_lng 
-				zoom: 16 
+						longitude: resp.data.starting_lng
+				zoom: 16
 				events: {
 					tilesloaded: (map) ->
 						$scope.$apply()
@@ -48,11 +48,11 @@ angular.module('pickapp').controller 'TravelController', ($scope, $rootScope, $i
 
 			console.log $scope.travel, 'user'
 
-			$scope.map = { 
-				center: 
+			$scope.map = {
+				center:
 						latitude: resp.data.starting_lat
-						longitude: resp.data.starting_lng 
-				zoom: 16 
+						longitude: resp.data.starting_lng
+				zoom: 16
 				events: {
 					tilesloaded: (map) ->
 						$scope.$apply()
@@ -80,15 +80,15 @@ angular.module('pickapp').controller 'TravelController', ($scope, $rootScope, $i
 	$scope.pullUpdate = ->
 		parseTravel()
 		$scope.$broadcast('scroll.refreshComplete');
-	
+
 	parseTravel()
-	
+
 	# Chat Data Parse
 
 	getChatData = () ->
 		PublicMessage.getPublicMessagesForTravel($stateParams.room_id, $stateParams.travel_id).then (resp) ->
 			$scope.travel.public_messages = resp.data
-		
+
 
 	# General Methods
 
@@ -96,7 +96,7 @@ angular.module('pickapp').controller 'TravelController', ($scope, $rootScope, $i
 		if $scope.travel
 			new Date($scope.travel.departure_datetime) > new Date()
 
-	##### Travel Methods 
+	##### Travel Methods
 
 	## Passenger
 
@@ -198,7 +198,7 @@ angular.module('pickapp').controller 'TravelController', ($scope, $rootScope, $i
 		)
 
 	# # Passenger Methods
-				
+
 
 	# Private Chats
 
@@ -248,7 +248,7 @@ angular.module('pickapp').controller 'TravelController', ($scope, $rootScope, $i
 		)
 
 	$scope.createPrivateChat = ->
-		PrivateChat.createPrivateChat($scope.travel.driver.id, $stateParams.room_id, $stateParams.travel_id).then( (resp) ->
+		PrivateChat.createPrivateChat($scope.travel.driver.id, $scope.travel.room.id, $scope.travel.id).then( (resp) ->
 			$scope.private_chat_id = resp.data
 			$scope.openPrivateChat($scope.private_chat_id)
 			getData()

@@ -3,13 +3,13 @@ angular.module('pickapp').controller 'RoomOfferController', ($scope, $rootScope,
 	$ionicPlatform.ready ->
 		if window.cordova and window.cordova.plugins.Keyboard
 			cordova.plugins.Keyboard.disableScroll true
-			cordova.plugins.Keyboard.hideKeyboardAccessoryBar true
-	
+			cordova.plugins.Keyboard.hideKeyboardAccessoryBar false
+
 
 	$scope.pullUpdate = ->
 		getData()
 		$scope.$broadcast('scroll.refreshComplete');
-	
+
 	getData = ()->
 		$ionicLoading.show()
 		Travel.getTravel($stateParams.room_id, $stateParams.travel_id).then( (resp) ->
@@ -19,11 +19,11 @@ angular.module('pickapp').controller 'RoomOfferController', ($scope, $rootScope,
 
 			console.log resp.data
 
-			$scope.map = { 
-				center: 
+			$scope.map = {
+				center:
 						latitude: resp.data.starting_lat
-						longitude: resp.data.starting_lng 
-				zoom: 16 
+						longitude: resp.data.starting_lng
+				zoom: 16
 				events: {
 					tilesloaded: (map) ->
 						$scope.$apply()
@@ -208,7 +208,7 @@ angular.module('pickapp').controller 'RoomOfferController', ($scope, $rootScope,
 		confirmPopup = $ionicPopup.confirm(
 			title: 'Elimina Richiesta'
 			template: 'Sei sicuro di voler eliminare questa offerta?')
-		
+
 		confirmPopup.then (res) ->
 			if res
 				Travel.destroyTravel($stateParams.room_id, $stateParams.travel_id).then( (resp) ->

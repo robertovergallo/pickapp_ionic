@@ -5,6 +5,7 @@ angular.module('pickapp').service('PrivateChat', ($q, $http, $rootScope, api_bas
     deferred = $q.defer()
     data = {}
     data.user_id = user_id
+    data.travel_id = travel_id
     $http({
       url: urlBase + '/rooms/' + room_id + '/travels/' + travel_id + '/private_chats' ,
       method: 'POST',

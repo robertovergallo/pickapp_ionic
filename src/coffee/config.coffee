@@ -219,7 +219,7 @@ angular.module('pickapp').config ($stateProvider, $urlRouterProvider, $httpProvi
           $auth.validateUser()
 
   $stateProvider.state 'app.room_request',
-    url: '/room_request/:travel_id'
+    url: '/rooms/:room_id/room_request/:travel_id'
     views: 'rooms-tab':
       templateUrl: 'templates/room_request.html'
       controller: 'RoomRequestController'

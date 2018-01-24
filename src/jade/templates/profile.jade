@@ -6,7 +6,7 @@ ion-view.profile.home(title="Profilo")
 	ion-content.has-subheader(padding="true")
 		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
 		.user_preview
-			.user_image(style="background-image: url({{user.profile_image_url}})" ng-click="selectPhoto()")
+			.user_image(style="background-image: url(https://{{user.profile_image_url}})" ng-click="selectPhoto()")
 			.badges_box
 				.badge(ng-click="showBadgesDialog(0)" ng-class="{'active': user.ecoking_badge.completed}")
 					.icon
@@ -27,13 +27,13 @@ ion-view.profile.home(title="Profilo")
 
 		.button-bar(style="margin: 20px 0px")
 			.button.button-clear.button-assertive(ui-sref="app.notifications()")
-				i.icon.ion-android-notifications 
+				i.icon.ion-android-notifications
 				b {{notification_count}}
 			.button.button-clear.button-positive(ui-sref="app.notifications()")
-				i.icon.ion-chatbubbles 
+				i.icon.ion-chatbubbles
 				b {{messages_count}}
 			.button.button-clear.button-energized(ng-if="user.car_count > 0" ui-sref="app.cars()")
-				i.icon.ion-android-car 
+				i.icon.ion-android-car
 				b {{user.car_count}}
 
 		.button.button-block.button-positive(ui-sref="app.profile_driver()" ng-if="!user.is_driver") Diventa guidatore per offrire passaggi
@@ -51,12 +51,12 @@ ion-view.profile.home(title="Profilo")
 				| Passeggero
 				i.icon.ion-ios-arrow-right
 			a.item.item-icon-right(ui-sref="app.profile_travels({travels: 'applied'})")
-				| Candidato 
+				| Candidato
 				i.icon.ion-ios-arrow-right
 			a.item.item-icon-right(ui-sref="app.profile_travels({travels: 'approved'})")
-				| Confermato 
+				| Confermato
 				i.icon.ion-ios-arrow-right
-		
+
 		.button.button-block(ng-click="showEditProfileModal()") Modifica Profilo
 		.button.button-block.button-assertive(ng-click="signOut()") Logout
 

@@ -2,9 +2,9 @@ var auth;
 
 angular.module('pickapp', ['ionic', 'ionic.cloud', 'ng-token-auth', 'ngCordova', 'uiGmapgoogle-maps', 'ngMessages', 'ionic.contrib.ui.hscrollcards']);
 
-if (window.location.protocol === 'http:') {
-  angular.module('pickapp').constant('api_base', '/api_base');
-  angular.module('pickapp').constant('auth_base', '/api_base');
+if (window.location.protocol === 'http:' && window.location.host !== "localhost:8080") {
+  angular.module('pickapp').constant('api_base', '/api_base_me');
+  angular.module('pickapp').constant('auth_base', '/api_base_me');
 } else {
   angular.module('pickapp').constant('api_base', 'http://www.pick-app.it/api');
   angular.module('pickapp').constant('auth_base', 'http://www.pick-app.it/api');
@@ -365,7 +365,7 @@ angular.module('pickapp').config(function($stateProvider, $urlRouterProvider, $h
     }
   });
   $stateProvider.state('app.room_request', {
-    url: '/room_request/:travel_id',
+    url: '/rooms/:room_id/room_request/:travel_id',
     views: {
       'rooms-tab': {
         templateUrl: 'templates/room_request.html',
@@ -652,9 +652,10 @@ angular.module('pickapp').controller('ProfileController', function($scope, $stat
     User.getTravelsAsPassenger($rootScope.user.id).then(function(resp) {
       return $scope.passenger_travels = resp.data;
     });
-    return User.getLatestReviewsAsTarget($rootScope.user.id).then(function(resp) {
+    User.getLatestReviewsAsTarget($rootScope.user.id).then(function(resp) {
       return $scope.latest_reviews = resp.data;
     });
+    return console.log($rootScope.user);
   };
   getData();
   $ionicModal.fromTemplateUrl('edit-profile-modal.html', {
@@ -860,7 +861,12 @@ angular.module('pickapp').controller('ProfileTravelsController', function($scope
   }
 });
 
-angular.module('pickapp').controller('RoomController', function($scope, $rootScope, $stateParams, $ionicModal, $ionicHistory, Room, User, Car, TravelRequest, Travel) {
+angular.module('pickapp').controller('RoomController', function($ionicPlatform, $scope, $rootScope, $stateParams, $ionicModal, $ionicHistory, Room, User, Car, TravelRequest, Travel) {
+  $ionicPlatform.ready(function() {});
+  if (window.cordova && window.cordova.plugins.Keyboard) {
+    cordova.plugins.Keyboard.disableScroll(true);
+    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
+  }
   Room.getRoom($stateParams.room_id).then(function(resp) {
     $scope.room = resp.data;
     $scope.map = {
@@ -886,7 +892,9 @@ angular.module('pickapp').controller('RoomController', function($scope, $rootSco
       }
     };
   });
-  $scope.newTravelRequest = {};
+  $scope.newTravelRequest = {
+    towards_room: true
+  };
   $scope.newTravelRequestDatePicker = function() {
     var date_picker_options, onError, onSuccess;
     date_picker_options = {
@@ -914,6 +922,9 @@ angular.module('pickapp').controller('RoomController', function($scope, $rootSco
     $scope.newTravelRequest.is_one_way = true;
     if ($scope.newTravelRequest.starting_address_addr && $scope.newTravelRequest.starting_address_city && $scope.newTravelRequest.starting_address_cap) {
       $scope.newTravelRequest.starting_address = $scope.newTravelRequest.starting_address_addr + " " + $scope.newTravelRequest.starting_address_city + " " + $scope.newTravelRequest.starting_address_cap;
+      $scope.newTravelRequest.desired_address = $scope.newTravelRequest.starting_address_addr;
+      $scope.newTravelRequest.city = $scope.newTravelRequest.starting_address_city;
+      $scope.newTravelRequest.zip_code = $scope.newTravelRequest.starting_address_cap;
       return TravelRequest.createTravelRequest($scope.room.id, $scope.newTravelRequest).then(function(resp) {
         console.log(resp.data);
         $scope.closeTravelRequestModal();
@@ -937,7 +948,9 @@ angular.module('pickapp').controller('RoomController', function($scope, $rootSco
   $scope.closeTravelRequestModal = function() {
     return $scope.travelRequestModal.hide();
   };
-  $scope.newTravelOffer = {};
+  $scope.newTravelOffer = {
+    towards_room: true
+  };
   $scope.newTravelOffer.travel_stops = [];
   $scope.newTravelOfferDatePicker = function() {
     var date_picker_options, onError, onSuccess;
@@ -997,6 +1010,7 @@ angular.module('pickapp').controller('RoomController', function($scope, $rootSco
       $scope.newTravelOffer.user_address = $scope.newTravelOffer.user_address_addr + " " + $scope.newTravelOffer.user_address_city + " " + $scope.newTravelOffer.user_address_cap;
       $scope.newTravelOffer.driver_id = $rootScope.user.id;
       $scope.newTravelOffer.room_id = $scope.room.id;
+      $scope.newTravelOffer.repetions_amount = $scope.newTravelOffer.repetitions_amount;
       return Travel.createTravel($scope.room.id, $scope.newTravelOffer).then(function(resp) {
         $scope.newTravelOffer = {};
         $scope.newTravelOffer.travel_stops = [];
@@ -1070,7 +1084,7 @@ angular.module('pickapp').controller('RoomOfferController', function($scope, $ro
   $ionicPlatform.ready(function() {
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.disableScroll(true);
-      return cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      return cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
     }
   });
   $scope.pullUpdate = function() {
@@ -1397,7 +1411,8 @@ angular.module('pickapp').controller('RoomRequestsController', function($scope, 
   };
   getData = function() {
     return Room.getRoom($stateParams.room_id).then(function(resp) {
-      return $scope.room = resp.data;
+      $scope.room = resp.data;
+      return console.log(resp.data);
     });
   };
   return getData();
@@ -1496,7 +1511,7 @@ angular.module('pickapp').controller('TravelController', function($scope, $rootS
   $ionicPlatform.ready(function() {
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.disableScroll(true);
-      return cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      return cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
     }
   });
   getData = function() {
@@ -1728,7 +1743,7 @@ angular.module('pickapp').controller('TravelController', function($scope, $rootS
     });
   };
   $scope.createPrivateChat = function() {
-    return PrivateChat.createPrivateChat($scope.travel.driver.id, $stateParams.room_id, $stateParams.travel_id).then(function(resp) {
+    return PrivateChat.createPrivateChat($scope.travel.driver.id, $scope.travel.room.id, $scope.travel.id).then(function(resp) {
       $scope.private_chat_id = resp.data;
       $scope.openPrivateChat($scope.private_chat_id);
       return getData();
@@ -1928,8 +1943,6 @@ angular.module('pickapp').controller('WelcomeController', function($scope, $root
   });
 });
 
-
-
 angular.module('pickapp').directive('confirmEmail', function($interpolate, $parse, User) {
   return {
     require: 'ngModel',
@@ -2007,6 +2020,8 @@ angular.module('pickapp').directive('confirmPwd', function($interpolate, $parse)
     }
   ]);
 })(window.ionic);
+
+
 
 if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports) {
   module.exports = 'ng-token-auth';
@@ -2653,7 +2668,7 @@ angular.module('ng-token-auth', ['ipCookie']).provider('$auth', function() {
               }
             },
             retrieveData: function(key) {
-              var e, error1;
+              var e;
               try {
                 if (this.getConfig().storage instanceof Object) {
                   return this.getConfig().storage.retrieveData(key);
@@ -2764,7 +2779,7 @@ angular.module('ng-token-auth', ['ipCookie']).provider('$auth', function() {
               return c || defaultConfigName;
             },
             hasSessionStorage: function() {
-              var error, error1;
+              var error;
               if (this._hasSessionStorage == null) {
                 this._hasSessionStorage = false;
                 try {
@@ -2778,7 +2793,7 @@ angular.module('ng-token-auth', ['ipCookie']).provider('$auth', function() {
               return this._hasSessionStorage;
             },
             hasLocalStorage: function() {
-              var error, error1;
+              var error;
               if (this._hasLocalStorage == null) {
                 this._hasLocalStorage = false;
                 try {
@@ -3086,7 +3101,7 @@ angular.module('pickapp').service('Auth', function($rootScope, $log, $ionicModal
         return pushRegister();
       })["catch"](function(err) {
         $rootScope.auth_modal.show();
-        if (window.location.protocol === 'http:') {
+        if (window.location.protocol === 'http:' && window.location.host !== "localhost:8080") {
           return fakeLogin();
         }
       });
@@ -3261,6 +3276,7 @@ angular.module('pickapp').service('PrivateChat', function($q, $http, $rootScope,
     deferred = $q.defer();
     data = {};
     data.user_id = user_id;
+    data.travel_id = travel_id;
     $http({
       url: urlBase + '/rooms/' + room_id + '/travels/' + travel_id + '/private_chats',
       method: 'POST',

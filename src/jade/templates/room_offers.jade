@@ -1,110 +1,110 @@
 ion-view.rooms
-	ion-nav-title Offerte
-	ion-content(padding="true")
-		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
+  ion-nav-title Offerte
+  ion-content(padding="true")
+    ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
 
-		.travel_card(ng-repeat="offer in room.travels | orderBy:'one_way_datetime'")
-			.tc_header
-				.tc_user_image(style="background-image: url({{offer.user.profile_image_url}})")
-				.tc_h_data
-					h2 {{offer.user.name}} {{offer.user.surname}} 
-					p {{offer.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
-			.tc_body(ng-if="offer.towards_room")
-				.tc_b_data
-					i.icon.ion-ios-flag.balanced
-					p 
-						b Da: 
-						| {{offer.starting_address}}
-				.tc_b_data
-					i.icon.ion-ios-location.assertive
-					p
-						b A: 
-						| {{room.name}}
+    .travel_card(ng-repeat="offer in room.travels | orderBy:'one_way_datetime'")
+      .tc_header
+        .tc_user_image(style="background-image: url(https://{{offer.user.profile_image_url}})")
+        .tc_h_data
+          h2 {{offer.user.name}} {{offer.user.surname}}
+          p {{offer.departure_datetime | date:"dd MMMM 'alle' HH:mm"}}
+      .tc_body(ng-if="offer.towards_room")
+        .tc_b_data
+          i.icon.ion-ios-flag.balanced
+          p
+            b Da:
+            | {{offer.starting_address}}
+        .tc_b_data
+          i.icon.ion-ios-location.assertive
+          p
+            b A:
+            | {{room.name}}
 
-			.tc_body(ng-if="!offer.towards_room")
-				.tc_b_data
-					i.icon.ion-ios-flag.balanced
-					p 
-						b Da: 
-						| {{room.name}}
-				.tc_b_data
-					i.icon.ion-ios-location.assertive
-					p
-						b A: 
-						| {{offer.destination_address}}
-			//- .tc_footer
-			//- 	.tc_f_data.assertive(ng-if="!travel.completed && !travel.waiting_for_confirm")
-			//- 		i.icon.ion-android-alert
-			//- 		p Non ancora Svolto
-			//- 	.tc_f_data.balanced(ng-if="travel.completed")
-			//- 		i.icon.ion-ios-checkmark
-			//- 		p Completato dal Guidatore
-			//- 	.tc_f_data.calm(ng-if="travel.waiting_for_confirm")
-			//- 		i.icon.ion-ios-checkmark-outline
-			//- 		p In attesa di Conferma da parte del Guidatore
-			.tc_actions
-				.tc_a_data(ui-sref="app.room_offer({room_id: room.id, travel_id: offer.id})")
-					i.icon.ion-eye
-					p Dettagli
+      .tc_body(ng-if="!offer.towards_room")
+        .tc_b_data
+          i.icon.ion-ios-flag.balanced
+          p
+            b Da:
+            | {{room.name}}
+        .tc_b_data
+          i.icon.ion-ios-location.assertive
+          p
+            b A:
+            | {{offer.destination_address}}
+      //- .tc_footer
+      //- 	.tc_f_data.assertive(ng-if="!travel.completed && !travel.waiting_for_confirm")
+      //- 		i.icon.ion-android-alert
+      //- 		p Non ancora Svolto
+      //- 	.tc_f_data.balanced(ng-if="travel.completed")
+      //- 		i.icon.ion-ios-checkmark
+      //- 		p Completato dal Guidatore
+      //- 	.tc_f_data.calm(ng-if="travel.waiting_for_confirm")
+      //- 		i.icon.ion-ios-checkmark-outline
+      //- 		p In attesa di Conferma da parte del Guidatore
+      .tc_actions
+        .tc_a_data(ui-sref="app.room_offer({room_id: room.id, travel_id: offer.id})")
+          i.icon.ion-eye
+          p Dettagli
 
-		//- .list.card(ng-repeat="offer in room.travels | orderBy:'one_way_datetime'")
+    //- .list.card(ng-repeat="offer in room.travels | orderBy:'one_way_datetime'")
 
-		//- 	.item.item-icon-left(ng-if="offer.towards_room")
-		//- 		i.icon.ion-ios-flag-outline.balanced
-		//- 		b Da: 
-		//- 		| {{offer.starting_address}}
-		//- 	.item.item-icon-left(ng-if="!offer.towards_room")
-		//- 		i.icon.ion-ios-flag-outline.balanced
-		//- 		b Da: 
-		//- 		| {{room.name}}
+    //- 	.item.item-icon-left(ng-if="offer.towards_room")
+    //- 		i.icon.ion-ios-flag-outline.balanced
+    //- 		b Da:
+    //- 		| {{offer.starting_address}}
+    //- 	.item.item-icon-left(ng-if="!offer.towards_room")
+    //- 		i.icon.ion-ios-flag-outline.balanced
+    //- 		b Da:
+    //- 		| {{room.name}}
 
-		//- 	.item.item-icon-left(ng-if="offer.towards_room")
-		//- 		i.icon.ion-ios-flag.assertive
-		//- 		b A: 
-		//- 		| {{room.name}}
-		//- 	.item.item-icon-left(ng-if="!offer.towards_room")
-		//- 		i.icon.ion-ios-flag.assertive
-		//- 		b A: 
-		//- 		| {{offer.destination_address}}
+    //- 	.item.item-icon-left(ng-if="offer.towards_room")
+    //- 		i.icon.ion-ios-flag.assertive
+    //- 		b A:
+    //- 		| {{room.name}}
+    //- 	.item.item-icon-left(ng-if="!offer.towards_room")
+    //- 		i.icon.ion-ios-flag.assertive
+    //- 		b A:
+    //- 		| {{offer.destination_address}}
 
-		//- 	.item.tabs.tabs-secondary.tabs-icon-left
-		//- 		a.tab-item(ui-sref="app.room_offer({room_id: room.id, travel_id: offer.id})")
-		//- 			i.icon.ion-eye
-		//- 			| Dettagli
+    //- 	.item.tabs.tabs-secondary.tabs-icon-left
+    //- 		a.tab-item(ui-sref="app.room_offer({room_id: room.id, travel_id: offer.id})")
+    //- 			i.icon.ion-eye
+    //- 			| Dettagli
 
-		.row(ng-if="room.travels.length == 0")
-			.col
-				p(style="color: #666; font-size: 14px; margin: 20px 0px; text-align: center;") Nessuno offre passaggi verso questa destinazione. Sarai tu il primo?
+    .row(ng-if="room.travels.length == 0")
+      .col
+        p(style="color: #666; font-size: 14px; margin: 20px 0px; text-align: center;") Nessuno offre passaggi verso questa destinazione. Sarai tu il primo?
 
-	script(id='chat-modal.html' type='text/ng-template')
-		ion-modal-view.map_modal
-			ion-header-bar
-				h1.title.positive Chat Pubblica
-				.buttons
-					button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeChatModal()")
-			ion-content.chat(scroll="true")
-				.message-wrapper(ng-repeat="message in travel_offer.public_messages | orderBy:'created_at'")
-					div(ng-if='!message.is_author')
-						img.profile-pic.left(ng-src='{{message.author.profile_image_url}}')
-						.chat-bubble.left
-							.message(ng-bind-html='message.content | nl2br', autolinker='')
-							.message-detail
-								span.bold(ng-click='viewProfile(message)' ng-if="message.author.surname") {{message.author.name}} {{message.author.surname}}
-								span.bold(ng-click='viewProfile(message)' ng-if="!message.author.surname") {{message.author.name}}
+  script(id='chat-modal.html' type='text/ng-template')
+    ion-modal-view.map_modal
+      ion-header-bar
+        h1.title.positive Chat Pubblica
+        .buttons
+          button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeChatModal()")
+      ion-content.chat(scroll="true")
+        .message-wrapper(ng-repeat="message in travel_offer.public_messages | orderBy:'created_at'")
+          div(ng-if='!message.is_author')
+            img.profile-pic.left(ng-src='{{message.author.profile_image_url}}')
+            .chat-bubble.left
+              .message(ng-bind-html='message.content | nl2br', autolinker='')
+              .message-detail
+                span.bold(ng-click='viewProfile(message)' ng-if="message.author.surname") {{message.author.name}} {{message.author.surname}}
+                span.bold(ng-click='viewProfile(message)' ng-if="!message.author.surname") {{message.author.name}}
 
-					div(ng-if='message.is_author')
-						img.profile-pic.right(ng-click='viewProfile(message)', ng-src='{{user.profile_image_url}}')
-						.chat-bubble.right
-							.message(ng-bind-html='message.content | nl2br', autolinker='')
-							.message-detail
-								span.bold(ng-click='viewProfile(message)' ng-if="user.surname") {{user.name}} {{user.surname}}
-								span.bold(ng-click='viewProfile(message)' ng-if="!user.surname") {{user.name}}
-					
-					.cf
+          div(ng-if='message.is_author')
+            img.profile-pic.right(ng-click='viewProfile(message)', ng-src='{{user.profile_image_url}}')
+            .chat-bubble.right
+              .message(ng-bind-html='message.content | nl2br', autolinker='')
+              .message-detail
+                span.bold(ng-click='viewProfile(message)' ng-if="user.surname") {{user.name}} {{user.surname}}
+                span.bold(ng-click='viewProfile(message)' ng-if="!user.surname") {{user.name}}
 
-			form(name='sendMessageForm' ng-submit='handleMessageNewClick(travel_offer.room.id, travel_offer.id)' novalidate='')
-				ion-footer-bar.bar-stable.item-input-inset.message-footer.bar-footer-chat(keyboard-attach='')
-					label.item-input-wrapper
-						textarea(style="width:100%" ng-model='newTravelOfferMessage.content' value='' placeholder='Messaggio...' required='' minlength='1' maxlength='1500' msd-elastic='')
-					.footer-btn-wrap
-						button.button.button-icon.icon.ion-android-send.footer-btn(type='submit' ng-disabled="!newTravelOfferMessage.content || newTravelOfferMessage.content === ''")
+          .cf
+
+      form(name='sendMessageForm' ng-submit='handleMessageNewClick(travel_offer.room.id, travel_offer.id)' novalidate='')
+        ion-footer-bar.bar-stable.item-input-inset.message-footer.bar-footer-chat(keyboard-attach='')
+          label.item-input-wrapper
+            textarea(style="width:100%" ng-model='newTravelOfferMessage.content' value='' placeholder='Messaggio...' required='' minlength='1' maxlength='1500' msd-elastic='')
+          .footer-btn-wrap
+            button.button.button-icon.icon.ion-android-send.footer-btn(type='submit' ng-disabled="!newTravelOfferMessage.content || newTravelOfferMessage.content === ''")

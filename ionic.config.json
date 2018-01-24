@@ -19,7 +19,7 @@
     },
     {
       "path": "/api_base_me",
-      "proxyUrl": "http://mbpro.local:3000/api"
+      "proxyUrl": "http://localhost:3000/api"
     }
   ],
   "browsers": [
@@ -28,5 +28,9 @@
       "browser": "crosswalk",
       "version": "12.41.296.5"
     }
-  ]
+  ],
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic1"
 }

@@ -1,110 +1,110 @@
 ion-view.room
-	ion-nav-title Richiesta
-	ion-content.travel_page
-		ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
-		.room_map(ng-click="showMapModal()" style="background-image: url(http://maps.googleapis.com/maps/api/staticmap?center={{travel_request.lat}},{{travel_request.lng}}9&zoom=16&size=600x300&maptype=roadmap&format=png)")
-			i.ion-location
-			i.ion-android-open
-			.room_address {{travel_request.starting_address}}
+  ion-nav-title Richiesta
+  ion-content.travel_page
+    ion-refresher(pulling-text="Aggiorna ..." on-refresh="pullUpdate()")
+    .room_map(ng-click="showMapModal()" style="background-image: url(http://maps.googleapis.com/maps/api/staticmap?center={{travel_request.lat}},{{travel_request.lng}}9&zoom=16&size=600x300&maptype=roadmap&format=png)")
+      i.ion-location
+      i.ion-android-open
+      .room_address {{travel_request.starting_address}}
 
-		ul.meta_list
-			li(ng-if="travel_request.is_owner" ng-cloak="travel_request.is_owner")
-				i.icon.ion-person
-				span
-					| Pubblicato da 
-					strong te
-			li.action(ng-if="!travel_request.is_owner" ng-cloak="!travel_request.is_owner" ng-click="showProfileDialog(travel_request.passenger.id)")
-				i.icon.ion-person
-				span
-					| Pubblicato da 
-					strong {{travel_request.passenger.name}} {{travel_request.passenger.surname}} 
+    ul.meta_list
+      li(ng-if="travel_request.is_owner" ng-cloak="travel_request.is_owner")
+        i.icon.ion-person
+        span
+          | Pubblicato da
+          strong te
+      li.action(ng-if="!travel_request.is_owner" ng-cloak="!travel_request.is_owner" ng-click="showProfileDialog(travel_request.passenger.id)")
+        i.icon.ion-person
+        span
+          | Pubblicato da
+          strong {{travel_request.passenger.name}} {{travel_request.passenger.surname}}
 
-			li
-				i.icon.ion-ios-calendar
-				span
-					strong Partenza: 
-					| {{ travel_request.one_way_datetime | date:"dd MMMM 'alle' HH:mm"}}
-			
-			li
-				i.icon.ion-ios-flag.green
-				span(ng-if="travel_request.towards_room")
-					strong Da: 
-					| {{ travel_request.starting_address }}
-				span(ng-if="!travel_request.towards_room")
-					strong Da: 
-					| {{ travel_request.room.name }}
+      li
+        i.icon.ion-ios-calendar
+        span
+          strong Partenza:
+          | {{ travel_request.one_way_datetime | date:"dd MMMM 'alle' HH:mm"}}
 
-			li
-				i.icon.icon.ion-ios-flag.red
-				span(ng-if="travel_request.towards_room")
-					strong A: 
-					| {{ travel_request.room.name }}
-				span(ng-if="!travel_request.towards_room")
-					strong A: 
-					| {{ travel_request.destination_address }}
-		
-		ul.meta_list
-			li
-				i.icon(ng-class="{'ion-close red': !travel_request.flexible_departure, 'ion-checkmark green': travel_request.flexible_departure}")
-				span Orario flessibile
+      li
+        i.icon.ion-ios-flag.green
+        span(ng-if="travel_request.towards_room")
+          strong Da:
+          | {{ travel_request.starting_address }}
+        span(ng-if="!travel_request.towards_room")
+          strong Da:
+          | {{ travel_request.room.name }}
 
-			li
-				i.icon(ng-class="{'ion-close red': !travel_request.can_repay, 'ion-checkmark green': travel_request.can_repay}")
-				span Richiede rimborso
+      li
+        i.icon.icon.ion-ios-flag.red
+        span(ng-if="travel_request.towards_room")
+          strong A:
+          | {{ travel_request.room.name }}
+        span(ng-if="!travel_request.towards_room")
+          strong A:
+          | {{ travel_request.destination_address }}
 
-		.travel_details(ng-if="travel_request.note")
-			.block
-				h3 Note sulla richiesta
-				p.travel_stops {{travel_request.note}}
+    ul.meta_list
+      li
+        i.icon(ng-class="{'ion-close red': !travel_request.flexible_departure, 'ion-checkmark green': travel_request.flexible_departure}")
+        span Orario flessibile
 
-		.row
-			.col
-				.button.button-block.button-energized(ng-click="openChat()") Chat Pubblica
+      li
+        i.icon(ng-class="{'ion-close red': !travel_request.can_repay, 'ion-checkmark green': travel_request.can_repay}")
+        span Richiede rimborso
 
-		.row
-			.col
-				.button.button-block.button-assertive(ng-click="destroyTravelRequest()" ng-if="travel_request.is_owner") Elimina
+    .travel_details(ng-if="travel_request.note")
+      .block
+        h3 Note sulla richiesta
+        p.travel_stops {{travel_request.note}}
+
+    .row
+      .col
+        .button.button-block.button-energized(ng-click="openChat()") Chat Pubblica
+
+    .row
+      .col
+        .button.button-block.button-assertive(ng-click="destroyTravelRequest()" ng-if="travel_request.is_owner") Elimina
 
 script(id='map-modal.html', type='text/ng-template')
-	ion-modal-view.map_modal
-		ion-header-bar
-			h1.title.positive Mappa
-			.buttons
-				button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeMapModal()")
-		ion-content(scroll="false" data-tap-disabled="false")
-			ui-gmap-google-map(center="map.center" zoom="map.zoom" dragging="true" events="map.events")
-				ui-gmap-marker(coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id")
-						
+  ion-modal-view.map_modal
+    ion-header-bar
+      h1.title.positive Mappa
+      .buttons
+        button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeMapModal()")
+    ion-content(scroll="false" data-tap-disabled="false")
+      ui-gmap-google-map(center="map.center" zoom="map.zoom" dragging="true" events="map.events")
+        ui-gmap-marker(coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id")
+
 
 script(id='chat-modal.html' type='text/ng-template')
-	ion-modal-view.chat
-		ion-header-bar
-			h1.title.positive Chat Pubblica
-			.buttons
-				button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeChatModal()")
-		ion-content(scroll="true" delegate-handle="chat_pane")
-			.message-wrapper(ng-repeat="message in travel_request.public_messages | orderBy:'created_at'")
-				div(ng-if='!message.is_author')
-					img.profile-pic.left(ng-src='{{message.author.profile_image_url}}')
-					.chat-bubble.left
-						.message(ng-bind-html='message.content | nl2br', autolinker='')
-						.message-detail
-							span.bold(ng-click='viewProfile(message)' ng-if="message.author.surname") {{message.author.name}} {{message.author.surname}}
-							span.bold(ng-click='viewProfile(message)' ng-if="!message.author.surname") {{message.author.name}}
+  ion-modal-view.chat
+    ion-header-bar
+      h1.title.positive Chat Pubblica
+      .buttons
+        button.button.button-icon.ion-ios-close-outline.assertive(ng-click="closeChatModal()")
+    ion-content(scroll="true" delegate-handle="chat_pane")
+      .message-wrapper(ng-repeat="message in travel_request.public_messages | orderBy:'created_at'")
+        div(ng-if='!message.is_author')
+          img.profile-pic.left(ng-src='{{message.author.profile_image_url}}')
+          .chat-bubble.left
+            .message(ng-bind-html='message.content | nl2br', autolinker='')
+            .message-detail
+              span.bold(ng-click='viewProfile(message)' ng-if="message.author.surname") {{message.author.name}} {{message.author.surname}}
+              span.bold(ng-click='viewProfile(message)' ng-if="!message.author.surname") {{message.author.name}}
 
-				div(ng-if='message.is_author')
-					img.profile-pic.right(ng-click='viewProfile(message)', ng-src='{{user.profile_image_url}}')
-					.chat-bubble.right
-						.message(ng-bind-html='message.content | nl2br', autolinker='')
-						.message-detail
-							span.bold(ng-click='viewProfile(message)' ng-if="user.surname") {{user.name}} {{user.surname}}
-							span.bold(ng-click='viewProfile(message)' ng-if="!user.surname") {{user.name}}
-				
-				.cf
+        div(ng-if='message.is_author')
+          img.profile-pic.right(ng-click='viewProfile(message)', ng-src='{{user.profile_image_url}}')
+          .chat-bubble.right
+            .message(ng-bind-html='message.content | nl2br', autolinker='')
+            .message-detail
+              span.bold(ng-click='viewProfile(message)' ng-if="user.surname") {{user.name}} {{user.surname}}
+              span.bold(ng-click='viewProfile(message)' ng-if="!user.surname") {{user.name}}
 
-		form(name='sendMessageForm' ng-submit='handleMessageNewClick()' novalidate='')
-			ion-footer-bar.bar-stable.item-input-inset.message-footer.bar-footer-chat(keyboard-attach='')
-				label.item-input-wrapper
-					textarea(style="width:100%" ng-model='newTravelRequestMessage.content' value='' placeholder='Messaggio...' required='' minlength='1' maxlength='1500' msd-elastic='')
-				.footer-btn-wrap
-					button.button.button-icon.icon.ion-paper-airplane.footer-btn(type='submit' ng-disabled="!newTravelRequestMessage.content || newTravelRequestMessage.content === ''")
+        .cf
+
+    form(name='sendMessageForm' ng-submit='handleMessageNewClick()' novalidate='')
+      ion-footer-bar.bar-stable.item-input-inset.message-footer.bar-footer-chat(keyboard-attach='')
+        label.item-input-wrapper
+          textarea(style="width:100%" ng-model='newTravelRequestMessage.content' value='' placeholder='Messaggio...' required='' minlength='1' maxlength='1500' msd-elastic='')
+        .footer-btn-wrap
+          button.button.button-icon.icon.ion-paper-airplane.footer-btn(type='submit' ng-disabled="!newTravelRequestMessage.content || newTravelRequestMessage.content === ''")
