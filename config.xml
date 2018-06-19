@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="it.koodit.pickapp" version="3.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.ionicframework.pickapp727388" version="3.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>PickApp</name>
     <description>
         An Ionic Framework and Cordova project.
@@ -71,6 +71,10 @@
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
     </platform>
     <platform name="android">
+        <config-file parent="/resources" target="./res/values/strings.xml">
+            <string name="fb_app_id">447004788814201</string>
+            <string name="fb_app_name">PickApp</string>
+        </config-file>
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />
         <icon density="hdpi" src="resources/android/icon/drawable-hdpi-icon.png" />
@@ -90,15 +94,15 @@
         <splash height="1280" src="resources/wp8/splash/SplashScreenImage.png" width="768" />
     </platform>
     <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
-    <plugin name="phonegap-plugin-push" spec="~1.8.1">
-        <variable name="SENDER_ID" value="1084310756977" />
-    </plugin>
     <plugin name="cordova-plugin-facebook4" spec="~1.7.4">
         <variable name="APP_ID" value="447004788814201" />
         <variable name="APP_NAME" value="PickApp" />
     </plugin>
+		<plugin name="cordova-plugin-device" spec="^2.0.2" />
     <plugin name="ionic-plugin-keyboard" spec="2.2.1" />
     <plugin name="cordova-plugin-datepicker" spec="0.9.3" />
     <plugin name="cordova-plugin-camera" spec="4.0.1" />
+    <plugin name="onesignal-cordova-plugin" spec="^2.4.1" />
     <engine name="ios" spec="4.5.4" />
+    <engine name="android" spec="7.0.0" />
 </widget>

@@ -14,6 +14,15 @@ auth = {};
 
 angular.module('pickapp').run(function($rootScope, $ionicPlatform, $ionicModal, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicLoading, $state, $timeout, $ionicHistory, $ionicPopup, Notification, User, Profile, Auth) {
   return $ionicPlatform.ready(function() {
+
+	var notificationOpenedCallback = function(jsonData) {
+		alert('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+	};
+	window.plugins.OneSignal
+	 .startInit("bf81fd5f-ada4-41ef-bd01-b44ef4cafd45")
+	 .endInit();
+
+
     var badges, myDate;
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
