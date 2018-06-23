@@ -21,6 +21,11 @@ angular.module('pickapp').run(function($rootScope, $ionicPlatform, $ionicModal, 
 	window.plugins.OneSignal
 	 .startInit("bf81fd5f-ada4-41ef-bd01-b44ef4cafd45")
 	 .endInit();
+	 window.plugins.OneSignal
+	 .getIds(function(ids) {
+		 //alert(JSON.stringify(ids));
+		 $rootScope.oneSignalIds = ids;
+	 });
 
 
     var badges, myDate;
@@ -3069,6 +3074,12 @@ angular.module('pickapp').service('Auth', function($rootScope, $log, $ionicModal
         $rootScope.auth_modal.hide();
         $rootScope.loginForm = {};
         $rootScope.registrationForm = {};
+				User.updateDeviceTokens($rootScope.oneSignalIds.userId, $rootScope.user.id)
+				/*.then(function(data) {
+					alert("OK: " + JSON.stringify(data));
+				}, function(err) {
+					alert("Error: " + JSON.stringify(err));
+				});*/
         user_has_photo();
         getNotifications();
         getUserDetails();
@@ -3815,11 +3826,14 @@ angular.module('pickapp').service('User', function($q, $http, $rootScope, api_ba
       url: urlBase + user_id + '/update_device_tokens',
       method: 'POST',
       data: {
+				user: $rootScope.user,
         device_token: token
       }
     }).then(function(data) {
       return deferred.resolve(data);
-    });
+    }, function(error) {
+      return deferred.reject(error);
+		});
     return deferred.promise;
   };
   this.clearDeviceTokens = function(user_id) {
