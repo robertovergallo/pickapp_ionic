@@ -1793,7 +1793,10 @@ angular.module('pickapp').controller('TravelController', function($scope, $rootS
   };
 });
 
-angular.module('pickapp').controller('WelcomeController', function($scope, $rootScope, $timeout, $ionicPopup, $auth, $ionicHistory, $ionicModal, $ionicActionSheet, $ionicPlatform, $cordovaCamera) {
+angular.module('pickapp').controller('WelcomeController', function($scope, $rootScope, $timeout, $ionicPopup, $auth, $ionicHistory, $ionicModal, $ionicActionSheet, $ionicPlatform, $cordovaCamera, User) {
+	if($rootScope.user != null && $rootScope.user.id != null && $rootScope.oneSignalIds != null && $rootScope.oneSignalIds.userId != null) {
+		User.updateDeviceTokens($rootScope.oneSignalIds.userId, $rootScope.user.id);
+	}
   $scope.dati_italia = anagrafica;
   $ionicModal.fromTemplateUrl('info-modal.html', {
     scope: $scope,
@@ -1832,6 +1835,9 @@ angular.module('pickapp').controller('WelcomeController', function($scope, $root
     return $scope.loginModal.hide();
   };
   $rootScope.$on('auth:login-success', function() {
+		if($rootScope.user != null && $rootScope.user.id != null && $rootScope.oneSignalIds != null && $rootScope.oneSignalIds.userId != null) {
+			User.updateDeviceTokens($rootScope.oneSignalIds.userId, $rootScope.user.id);
+		}
     return $scope.loginModal.hide();
   });
   $scope.$on('auth:password-reset-request-success', function(ev, data) {
@@ -3074,7 +3080,6 @@ angular.module('pickapp').service('Auth', function($rootScope, $log, $ionicModal
         $rootScope.auth_modal.hide();
         $rootScope.loginForm = {};
         $rootScope.registrationForm = {};
-				User.updateDeviceTokens($rootScope.oneSignalIds.userId, $rootScope.user.id)
 				/*.then(function(data) {
 					alert("OK: " + JSON.stringify(data));
 				}, function(err) {
